@@ -14,6 +14,7 @@ class Engine:
         self.daily_settlement = settle_mode
         self.start_time = start_time
         self.portfolio_maps = {}
+        self.td_gateway = None
 
         self.quote_data = []
 
@@ -23,6 +24,10 @@ class Engine:
         if self.engine_mode == 'backtest':
             self.read_db()
             self.run_backtest()
+        elif self.engine_mode == 'trade':
+            pass
+
+
 
     def load_portfolio_config(self):
         # 加载策略配置
@@ -42,6 +47,7 @@ class Engine:
 
                     df = df.sort_values(by='start_time').reset_index(drop=True)
                     df['symbol'] = symbol
+                    df['last_price'] = df['close']
                 self.quote_data.extend([row.to_dict() for index, row in df.iterrows()])
                 print(f'-----加载 {symbol} 行情成功，共{len(df)}条数据 -----')
                 self.quote_data.sort(key=lambda x: x['start_time'])

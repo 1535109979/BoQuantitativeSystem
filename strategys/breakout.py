@@ -36,12 +36,13 @@ class BreakoutStrategy:
         self.load_last_price()
 
     def load_last_price(self):
-        for c in self.strategy_process.latest_price_list:
-            self.am.append(c)
+        if self.strategy_process.latest_price_list:
+            for c in self.strategy_process.latest_price_list:
+                self.am.append(c)
 
-        price_ma_list = numpy.convolve(
-                self.am, numpy.ones(self.roll_mean_period) / self.roll_mean_period, mode="valid")
-        self.roll_mean_list += list(price_ma_list)
+            price_ma_list = numpy.convolve(
+                    self.am, numpy.ones(self.roll_mean_period) / self.roll_mean_period, mode="valid")
+            self.roll_mean_list += list(price_ma_list)
 
     @common_exception(log_flag=True)
     def cal_indicator(self, quote):

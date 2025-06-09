@@ -5,6 +5,7 @@ system = platform.system()
 
 
 class Configs:
+    account_type = 'CRYPTO'
     position_multi_limit = 5
     dr = 0.002
     signal_reserve_time = 1200
@@ -12,14 +13,15 @@ class Configs:
     db_fp = '/Users/edy/byt_pub/a_songbo/binance_client/backtest/binance_quote_data.db'
 
     if system == 'Darwin':
-        root_fp = '/Users/edy/byt_pub/'
+        root_fp = '/Users/edy/byt_pub/BoQuantitativeSystem/'
 
     elif system == 'Linux':
         root_fp = '/a_songbo/'
 
     base_config = {
-        'strategy_name': ['breakout', 'bid'], 'open_direction': 'LONG',
-        'cover_count': 0, 'stop_profit_rate': 1.3, 'peak': 0, 'tough': 0,
+        'strategy_name': ['breakout', 'bid'], 'open_direction': 'LONG','open_volume': 30,
+        'cover_count': 0, 'stop_profit_rate': 1.3, 'peak': 0, 'tough': 0,'cash': 30,
+        'last_couer_price': 0,
         'cover_multi_list': [2, 4, 8, 16, 32, 64],
         'cover_decline_list': [5, 6, 7, 8, 9, 10], }
 

@@ -15,9 +15,9 @@ class BidStrategy:
         self.tough = params['tough']
         self.cash = params['cash']
         self.last_couer_price = params['last_couer_price']
-        self.cover_count = strategy_process.cover_count
+        self.cover_count = params['cover_count']
         self.cover_decline_list = params['cover_decline_list']
-        self.cover_muti_list = params['cover_muti_list']
+        self.cover_muti_list = params['cover_multi_list']
         self.stop_profit_rate = params['stop_profit_rate']
 
     @common_exception(log_flag=True)

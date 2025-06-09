@@ -13,12 +13,18 @@ class PortfolioProcess:
         self.params = instrument_config
         self.create_logger()
         self.strategy_list = []
+        self.latest_price_list = []
 
         self.load_strategy()
 
     def on_quote(self, quote):
-        print(quote)
-        print(self.params)
+        print('quote', quote)
+
+        for strategy in self.strategy_list:
+            strategy.cal_indicator(quote)
+
+        for strategy in self.strategy_list:
+            strategy.cal_singal(quote)
         quit()
 
     def load_strategy(self):
