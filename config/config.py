@@ -19,7 +19,7 @@ class Configs:
         root_fp = '/Users/edy/byt_pub/BoQuantitativeSystem/'
 
     elif system == 'Linux':
-        root_fp = '/a_songbo/'
+        root_fp = '/a_songbo/BoQuantitativeSystem/'
 
     base_config = {
         'strategy_name': ['breakout', 'bid'], 'open_direction': 'LONG','open_volume': 30,
