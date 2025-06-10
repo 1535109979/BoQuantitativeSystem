@@ -1,6 +1,6 @@
 import argparse
 
-from BoQuantitativeSystem.engine import Engine
+from BoQuantitativeSystem.ss_engine import Engine
 
 
 def main():

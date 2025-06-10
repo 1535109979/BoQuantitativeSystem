@@ -6,7 +6,7 @@ from BoQuantitativeSystem.grpc_files import ms_server_pb2_grpc, ms_server_pb2
 from BoQuantitativeSystem.utils.thread import run_in_new_thread
 
 
-class MarketStub():
+class MarketStub:
     def __init__(self):
         channel = grpc.insecure_channel("0.0.0.0:6612")
         self.sub = ms_server_pb2_grpc.AsyncMarketServerStub(channel=channel)
@@ -33,7 +33,9 @@ def on_quote(quote):
     print('get quote:', quote)
 
 if __name__ == '__main__':
-    MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=on_quote)
+    # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=on_quote)
+    MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=on_quote)
 
     while 1:
         pass
+

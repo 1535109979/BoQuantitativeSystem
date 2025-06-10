@@ -8,8 +8,10 @@ import asyncio
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.grpc_files import ms_server_pb2
 from BoQuantitativeSystem.market.bian_future_api.bian_future_md import BiFutureMdApi
+from BoQuantitativeSystem.market.ctp_vn_api.vn_md_api import VnMdApi
 from BoQuantitativeSystem.market.quote_writer import QuoteWriter
 from BoQuantitativeSystem.utils.dingding import Dingding
+from BoQuantitativeSystem.utils.sys_exception import common_exception
 
 
 class MsGateway(object):
@@ -30,10 +32,17 @@ class MsGateway(object):
         if account_type == 'CRYPTO':
             self.client = BiFutureMdApi(self)
             self.client.connect()
-            Dingding.send_msg('行情服务启动成功')
+            # Dingding.send_msg('币安行情服务启动成功')
+        if account_type == 'FUTURE':
+            self.client = VnMdApi(self)
+
 
     def get_api_configs(self):
-        return {'stream_url': 'wss://fstream.binance.com'}
+        if Configs.account_type == 'CRYPTO':
+            return {'stream_url': 'wss://fstream.binance.com'}
+
+        elif Configs.account_type == 'FUTURE':
+            return Configs.ctp_setting
 
     def add_subscribe(self, need_sub, quote_writer: QuoteWriter):
         if not self.client:
@@ -47,6 +56,7 @@ class MsGateway(object):
             if symbol not in quote_writer.subscribe_symbol:
                 quote_writer.add_symbol([symbol])
 
+    @common_exception(log_flag=True)
     def on_quote(self, quote):
         quote = {k: str(v) for k, v in quote.items() if v is not None}
         quote['ms_gateway_timestamp'] = str(time.time())
@@ -54,7 +64,7 @@ class MsGateway(object):
             for p, q in self.quote_subscriber.items():
                 if quote['symbol'] in q.subscribe_symbol:
                     self.send_quote(q, quote)
-        self.logger.info(f'{quote["symbol"]} quote_time:{quote["localtime"]} ms_gateway_timestamp:{quote["ms_gateway_timestamp"]}')
+        self.logger.info(f'{quote["symbol"]} ms_gateway_timestamp:{quote["ms_gateway_timestamp"]}')
 
     def send_quote(self, q, quote):
         try:
@@ -77,6 +87,9 @@ class MsGateway(object):
             quote_writer = self.add_subscriber(peer,context)
         return quote_writer
 
+    def cancel_subscriber(self, peer):
+        self.quote_subscriber.pop(peer)
+
     def on_error(self, msg):
         self.logger.error(msg)
         Dingding.send_msg(msg)
@@ -97,9 +110,6 @@ class MsGateway(object):
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
-if __name__ == '__main__':
-    MsGateway().sub_account('CRYPTO')
-
-    while 1:
+    def on_login_success(self):
+        # Dingding.send_msg('ctp行情服务启动成功')
         pass
-

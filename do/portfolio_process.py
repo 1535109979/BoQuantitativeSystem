@@ -19,13 +19,13 @@ class PortfolioProcess:
 
     def on_quote(self, quote):
         print('quote', quote)
+        return
 
         for strategy in self.strategy_list:
             strategy.cal_indicator(quote)
 
         for strategy in self.strategy_list:
             strategy.cal_singal(quote)
-        quit()
 
     def load_strategy(self):
         if 'breakout' in self.params['strategy_name']:
@@ -39,7 +39,7 @@ class PortfolioProcess:
     def create_logger(self):
         self.logger = logging.getLogger(f'strategy_{self.params["instrument"]}')
         self.logger.setLevel(logging.DEBUG)
-        log_fp = Configs.root_fp + f'BoQuantitativeSystem/logs/strategy_logs/{self.params["instrument"]}.log'
+        log_fp = Configs.root_fp + f'logs/strategy_logs/{self.params["instrument"]}.log'
 
         from logging.handlers import TimedRotatingFileHandler
         handler = TimedRotatingFileHandler(log_fp, when="midnight", interval=1, backupCount=7)
