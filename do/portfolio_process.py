@@ -37,6 +37,9 @@ class PortfolioProcess:
             self.strategy_list.append(b)
 
     def create_logger(self):
+        if not os.path.exists(Configs.root_fp + 'logs/strategy_logs'):
+            os.makedirs(Configs.root_fp + 'logs/strategy_logs')
+
         self.logger = logging.getLogger(f'strategy_{self.params["instrument"]}')
         self.logger.setLevel(logging.DEBUG)
         log_fp = Configs.root_fp + f'logs/strategy_logs/{self.params["instrument"]}.log'
