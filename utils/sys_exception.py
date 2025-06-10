@@ -1,10 +1,14 @@
 import functools
 import logging
+import os
 import traceback
 from logging.handlers import TimedRotatingFileHandler
 
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.utils.dingding import Dingding
+
+if not os.path.exists(Configs.root_fp + 'logs'):
+    os.makedirs(Configs.root_fp + 'logs')
 
 logger = logging.getLogger('common_exception')
 logger.setLevel(logging.DEBUG)

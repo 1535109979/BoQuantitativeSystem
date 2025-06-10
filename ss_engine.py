@@ -72,9 +72,6 @@ class SsEngine:
         #     print(f'not portfolio {instrument}', quote)
 
     def create_logger(self):
-        if not os.path.exists(Configs.root_fp + 'logs'):
-            os.makedirs(Configs.root_fp + 'logs')
-
         self.logger = logging.getLogger('bi_future_ss')
         self.logger.setLevel(logging.DEBUG)
         log_fp = Configs.root_fp + 'logs/bi_future_ss.log'

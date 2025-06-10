@@ -1,4 +1,5 @@
 import logging
+import os
 
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.strategys.bid import BidStrategy
