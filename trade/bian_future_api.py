@@ -62,7 +62,7 @@ class BiFutureTd:
 
         # self._add_restart_listen_timer()
         # query account   check ping
-        self._add_query_account_timer(interval=30)
+        self._add_query_account_timer(interval=40)
 
     def connect(self):
         if self.client:
@@ -160,7 +160,7 @@ class BiFutureTd:
         """ 检测监听的数据流连接是否断开, 超过3分钟没有收到on_ping回调说明出现了问题, 连续两次没收到时重启 """
         ts = time.time() - self._listen_last_ping_ts
         self.logger.info(f'<_check_listen_ping>_listen_last_ping_ts={self._listen_last_ping_ts} ts={ts}')
-        if not self._listen_last_ping_ts or ts < 60 * 6:
+        if not self._listen_last_ping_ts or ts < 60 * 3:
             return
         self.logger.warning("!! check_listen_ping !! %s", ts)
 
