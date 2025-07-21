@@ -8,7 +8,6 @@ import asyncio
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.grpc_files import ms_server_pb2
 from BoQuantitativeSystem.market.bian_future_api.bian_future_md import BiFutureMdApi
-from BoQuantitativeSystem.market.ctp_vn_api.vn_md_api import VnMdApi
 from BoQuantitativeSystem.market.quote_writer import QuoteWriter
 from BoQuantitativeSystem.utils.dingding import Dingding
 from BoQuantitativeSystem.utils.sys_exception import common_exception
@@ -34,6 +33,7 @@ class MsGateway(object):
             self.client.connect()
             # Dingding.send_msg('币安行情服务启动成功')
         if account_type == 'FUTURE':
+            from BoQuantitativeSystem.market.ctp_vn_api.vn_md_api import VnMdApi
             self.client = VnMdApi(self)
 
 
