@@ -65,6 +65,7 @@ class PortfolioProcess:
             df = self.get_future_data(st_time, symbol, interval)
             self.latest_price_list += df['close'].astype(float).to_list()
             st_time = st_time + 1000 * 60
+        self.logger.info(f'<get_future_data>: latest_time={df.loc[len(df) - 1].close_time}')
 
     def get_future_data(self, st_time, symbol='BTCUSDT', interval='1m'):
         data = self.engine.kline_client.klines(symbol, interval, limit=1000, startTime=int(st_time) * 1000)
@@ -76,6 +77,7 @@ class PortfolioProcess:
         df['end_time'] = df['end_time'].apply(lambda x: datetime.fromtimestamp(x / 1000))
         df = df.sort_values(by='close_time')
         df = df[df['close_time'] <= datetime.now()]
+
         return df
 
     def create_logger(self):

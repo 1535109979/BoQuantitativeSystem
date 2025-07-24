@@ -65,8 +65,8 @@ class BreakoutStrategy:
         self.am = self.am[-self.min_save_window:]
         self.last_n_max = max(self.am[-self.windows:])
         self.last_n_min = min(self.am[-self.windows:])
-        self.min_dr = last_price / self.last_n_min - 1
-        self.max_dr = last_price / self.last_n_max - 1
+        self.min_dr = round(last_price / self.last_n_min - 1, 6)
+        self.max_dr = round(last_price / self.last_n_max - 1, 6)
 
         self.am.append(last_price)
         roll_mean = round(sum([float(x) for x in self.am[-self.roll_mean_period:]]) / self.roll_mean_period, 8)
