@@ -46,8 +46,7 @@ class SsEngine:
 
     def load_portfolio_config(self):
         # 加载策略配置
-        for instrument_config in Configs.instrument_configs:
-            instrument_config.update(Configs.base_config)
+        for instrument_config in Configs.strategy_list:
 
             self.portfolio_maps[instrument_config['instrument']] = PortfolioProcess(self, instrument_config)
             self.logger.info(f'<load_portfolio_config> {instrument_config}')

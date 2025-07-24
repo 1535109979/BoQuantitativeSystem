@@ -22,23 +22,29 @@ class Configs:
         root_fp = '/a_songbo/BoQuantitativeSystem/'
 
     # stop_loss breakout bid
-    base_config = {
-        'strategy_name': ['breakout', 'stop_loss'], 'open_direction': 'LONG','open_volume': 30,
-        'cover_count': 0, 'stop_profit_rate': 1.3, 'peak': 0, 'tough': 0,'cash': 30,
-        'last_couer_price': 0, 'stop_loss_rate': 0.1,
-        'cover_multi_list': [2, 4, 8, 16, 32, 64],
-        'cover_decline_list': [5, 6, 7, 8, 9, 10], }
+    strategy_list = [
 
-    instrument_configs = [
-        # {'instrument': 'LTCUSDT', 'windows': 550, 'roll_mean_period': 630, 'interval_period': 60, },
-        # {'instrument': 'RLCUSDT', 'windows': 400, 'roll_mean_period': 120, 'interval_period': 860, },
-        # {'instrument': 'ONDOUSDT', 'windows': 430, 'roll_mean_period': 200, 'interval_period': 710, },
-        {'instrument': 'AEVOUSDT', 'windows': 100, 'roll_mean_period': 800, 'interval_period': 100, },
-        # {'instrument': 'BANDUSDT', 'windows': 730, 'roll_mean_period': 540, 'interval_period': 660, },
-        # {'instrument': 'CELRUSDT', 'windows': 720, 'roll_mean_period': 610, 'interval_period': 400, },
-        # {'instrument': 'MOVRUSDT', 'windows': 300, 'roll_mean_period': 300, 'interval_period': 900, },
-        # {'instrument': 'NFPUSDT', 'windows': 390, 'roll_mean_period': 100, 'interval_period': 320, },
-        # {'instrument': 'PORTALUSDT', 'windows': 600, 'roll_mean_period': 500, 'interval_period': 600, },
+        {'instrument': 'RLCUSDT', 'cash': 100,
+         'windows': 400, 'roll_mean_period': 120, 'interval_period': 860,
+         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
+         'open_volume': 30, 'order_step_muti': 20, 'stop_loss_rate': 0,
+         'cover_count': 1, 'last_couer_price': 2.3888,
+         'cover_muti_list': [2, 4, 8, 16, 32, 64],
+         'cover_decline_list': [5, 6, 7, 8, 9, 10],
+         'peak': 2.1439, 'tough': 1.9825,
+         'stop_profit_rate': 1.3,
+         },
+
+        {'instrument': 'ONDOUSDT', 'cash': 100,
+         'windows': 430, 'roll_mean_period': 200, 'interval_period': 710,
+         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
+         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0,
+         'cover_count': 1, 'last_couer_price': 1.1391,
+         'cover_muti_list': [2, 4, 8, 16, 32, 64],
+         'cover_decline_list': [7, 8, 9, 10, 11, 12],
+         'peak': 0, 'tough': 0,
+         'stop_profit_rate': 1.3,
+         },
     ]
 
     ctp_setting = {

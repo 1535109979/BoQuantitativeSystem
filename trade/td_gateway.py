@@ -83,7 +83,7 @@ class TDGateway:
         }
         self.logger.info(f'<insert_order> instrument={instrument} offset_flag={offset_flag} direction={direction} '
                          f'order_price_type={order_price_type} trade_price={trade_price} volume={volume}')
-
+        return
         client_order_id = self.client.insert_order(
             **req, **kwargs)
 
