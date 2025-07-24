@@ -102,9 +102,10 @@ class BiFutureTd:
             self._listen_client = self._create_listen_client()
             self.logger.info("<create_listen_client> %s", self._listen_client)
 
-        self.reqUserLoginId += 1
         self._listen_client.user_data(listen_key=self._listen_key)
         self.logger.info("<listen_user_data> %s %s", self.reqUserLoginId, self._listen_key)
+
+        self.reqUserLoginId += 1
 
     def _create_listen_client(self):
         return UMFuturesWebsocketClient(
@@ -181,10 +182,11 @@ class BiFutureTd:
             self._listen_client = None
 
     def _on_listen_error(self, _, data):
+        print(data)
         self.ready = False
         self.logger.error(f"<on_listen_error> {self.reqUserLoginId} {self._listen_key} "
                           f"{self._listen_client} {data}")
-        self.gateway.send_start_unsuccessful_msg(f"on_listen_error:{json.dumps(data)}")
+        self.gateway.send_start_unsuccessful_msg(f"on_listen_error:{data}")
         self.close()
         self._start_listen()
 
@@ -279,7 +281,7 @@ class BiFutureTd:
             if self.reqUserLoginId == 1:
                 # 添加定时器
                 self._add_restart_listen_timer()
-                # self.gateway.on_account_update()
+                self.gateway.on_account_update()
             else:
                 # 发送启动成功通知
                 self.gateway.send_start_msg(login_reqid=self.reqUserLoginId)

@@ -21,18 +21,19 @@ class Configs:
     elif system == 'Linux':
         root_fp = '/a_songbo/BoQuantitativeSystem/'
 
+    # stop_loss breakout bid
     base_config = {
-        'strategy_name': ['breakout', 'bid'], 'open_direction': 'LONG','open_volume': 30,
+        'strategy_name': ['breakout', 'stop_loss'], 'open_direction': 'LONG','open_volume': 30,
         'cover_count': 0, 'stop_profit_rate': 1.3, 'peak': 0, 'tough': 0,'cash': 30,
-        'last_couer_price': 0,
+        'last_couer_price': 0, 'stop_loss_rate': 0.1,
         'cover_multi_list': [2, 4, 8, 16, 32, 64],
         'cover_decline_list': [5, 6, 7, 8, 9, 10], }
 
     instrument_configs = [
-        {'instrument': 'LTCUSDT', 'windows': 550, 'roll_mean_period': 630, 'interval_period': 60, },
+        # {'instrument': 'LTCUSDT', 'windows': 550, 'roll_mean_period': 630, 'interval_period': 60, },
         # {'instrument': 'RLCUSDT', 'windows': 400, 'roll_mean_period': 120, 'interval_period': 860, },
         # {'instrument': 'ONDOUSDT', 'windows': 430, 'roll_mean_period': 200, 'interval_period': 710, },
-        # {'instrument': 'AEVOUSDT', 'windows': 600, 'roll_mean_period': 350, 'interval_period': 320, },
+        {'instrument': 'AEVOUSDT', 'windows': 100, 'roll_mean_period': 800, 'interval_period': 100, },
         # {'instrument': 'BANDUSDT', 'windows': 730, 'roll_mean_period': 540, 'interval_period': 660, },
         # {'instrument': 'CELRUSDT', 'windows': 720, 'roll_mean_period': 610, 'interval_period': 400, },
         # {'instrument': 'MOVRUSDT', 'windows': 300, 'roll_mean_period': 300, 'interval_period': 900, },
@@ -53,9 +54,9 @@ class Configs:
         'recvWindow': '5000',
         'stream_url': 'wss://fstream.binance.com',
         'base_url': 'https://fapi.binance.com',
-        # 'api_key': '8kHJ8xMwb8wZkrTy17IVOym4CDo5qS6JFP8suvpsDaWCqjuBuIAn29HFYKuQM1bE',
-        # 'secret_key': 'uUH1X2sz5jnMVhL44zxHiphnxhoQ5swPs62gFg4JFLCRayWwFr2MZJm9dJlaM2WK',
-        'api_key': 'tw8xvSqYAXfqqTHWBKKuvETUcJ6w9BttMG6QIb7q7CceVrl74RdeChxeg05zfDg2',
-        'secret_key': '81b9bXaVU7t0QhRQrFB5NfulRYYO7IFiR2D3rLOdrSlbGA2NYwxBvIy09JQPC1dL',
+        'api_key': '8kHJ8xMwb8wZkrTy17IVOym4CDo5qS6JFP8suvpsDaWCqjuBuIAn29HFYKuQM1bE',       # bo
+        'secret_key': 'uUH1X2sz5jnMVhL44zxHiphnxhoQ5swPs62gFg4JFLCRayWwFr2MZJm9dJlaM2WK',
+        # 'api_key': 'tw8xvSqYAXfqqTHWBKKuvETUcJ6w9BttMG6QIb7q7CceVrl74RdeChxeg05zfDg2',     # hui
+        # 'secret_key': '81b9bXaVU7t0QhRQrFB5NfulRYYO7IFiR2D3rLOdrSlbGA2NYwxBvIy09JQPC1dL',
     }
 

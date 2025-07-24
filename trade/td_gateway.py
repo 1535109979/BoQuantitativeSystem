@@ -28,7 +28,11 @@ class TDGateway:
 
     @common_exception(log_flag=True)
     def on_query_account(self, data):
-        pass
+        self.logger.info(f"<on_query_account> data={data}")
+
+    @common_exception(log_flag=True)
+    def on_account_update(self):
+        self.logger.info(f"<on_account_update> balance={self.account_book.balance}")
 
     def cancel_cancel_all_order(self, instrument):
         self.client.cancel_all_order(instrument)
@@ -119,5 +123,5 @@ class TDGateway:
         return ExchangeType.BINANCE_F
 
     def send_msg(self, msg):
-        # Dingding.send_msg(msg)
-        pass
+        Dingding.send_msg(msg)
+        # pass

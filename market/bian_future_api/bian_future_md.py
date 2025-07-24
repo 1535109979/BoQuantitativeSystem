@@ -25,7 +25,7 @@ class BiFutureMdApi:
         self.sub_instrument = []
 
         self.md_time_flag = 0
-        self._add_check_md_timer(120)
+        self._add_check_md_timer(60)
 
     def _add_check_md_timer(self, interval):
         def _func():
@@ -37,13 +37,14 @@ class BiFutureMdApi:
     @common_exception(log_flag=True)
     def _check_md_time_flag(self):
         ts = time.time() - self.md_time_flag
-        self.logger.info(f'<_check_md_time_flag> ts={ts}')
-        if not self.md_time_flag or ts < 60 * 6:
+        self.logger.info(f'<_check_md_time_flag> md_time_flag={self.md_time_flag} ts={ts}')
+        if not self.md_time_flag:
+            self.md_time_flag = time.time()
             return
 
-        self.logger.warning("!! _check_md_time_flag !! %s", ts)
+        # self.logger.warning("!! _check_md_time_flag !! %s", ts)
 
-        if 60 * 6 < ts < 60 * 30:
+        if 60 * 3 < ts < 60 * 30:
             self.gateway.on_front_disconnected(
                 "连续{}分钟没有收到行情".format(round(ts / 60, 1)))
             self._reconnect()
@@ -69,6 +70,8 @@ class BiFutureMdApi:
         self.logger.info("<create_client> %s %s %s", self.reqUserLoginId, self.client, self.configs)
 
         self.kline_client = UMFutures()
+
+        self.gateway.send_msg('币安行情服务启动成功')
 
     def _reconnect(self):
         self.logger.info("<reconnect> %s %s", self.reqUserLoginId, self.client)
@@ -156,7 +159,11 @@ class BiFutureMdApi:
             return False
         for symbol in instrument:
             self.logger.info("<subscribe_kline> %s %s", interval, symbol)
-            self.client.kline(symbol=symbol, interval=interval)
+            try:
+                self.client.kline(symbol=symbol, interval=interval)
+            except Exception as e:
+                self.logger.error("<subscribe_kline> %s data: %s", e, symbol)
+                self.gateway.send_msg(f'<subscribe_kline> error: {e}')
             if symbol not in self.sub_instrument:
                 self.sub_instrument.append(symbol)
 

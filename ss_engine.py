@@ -30,14 +30,15 @@ class SsEngine:
             self.run_backtest()
 
         elif self.engine_mode == 'trade':
-            self.load_portfolio_config()
             self.ms_stub = MarketStub()
+            self.td_gateway = TDGateway(self)
+            self.load_portfolio_config()
             # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=self.on_quote)
             # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=self.on_quote)
+            MarketStub().subscribe_stream_in_new_thread(instruments=self.portfolio_maps.keys(), on_quote=self.on_quote)
             self.logger.info(f'subscribe instruments={self.portfolio_maps.keys()}')
-            # MarketStub().subscribe_stream_in_new_thread(instruments=self.portfolio_maps.keys(), on_quote=self.on_quote)
 
-            self.td_gateway = TDGateway(self)
+
 
 
     def load_portfolio_config(self):
@@ -46,6 +47,7 @@ class SsEngine:
             instrument_config.update(Configs.base_config)
 
             self.portfolio_maps[instrument_config['instrument']] = PortfolioProcess(self, instrument_config)
+            self.logger.info(f'<load_portfolio_config> {instrument_config}')
 
     def load_data(self):
         if self.account_type == 'CRYPTO':
@@ -62,14 +64,14 @@ class SsEngine:
 
     def on_quote(self, quote):
         quote = {k: str(v) for k, v in quote.items() if v is not None}
-        print(quote)
+        # print(quote)
         # return
-        # instrument = quote['symbol']
-        # p = self.portfolio_maps.get(instrument)
-        # if p:
-        #     p.on_quote(quote)
-        # else:
-        #     print(f'not portfolio {instrument}', quote)
+        instrument = quote['symbol']
+        p = self.portfolio_maps.get(instrument)
+        if p:
+            p.on_quote(quote)
+        else:
+            self.logger.info(f'not portfolio {instrument}', quote)
 
     def create_logger(self):
         self.logger = logging.getLogger('bi_future_ss')

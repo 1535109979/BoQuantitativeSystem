@@ -2,6 +2,7 @@ import time
 
 import numpy
 
+from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.trade.do.position import InstrumentPosition
 from BoQuantitativeSystem.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 from decimal import Decimal

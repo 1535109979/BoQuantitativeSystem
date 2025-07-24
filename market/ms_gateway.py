@@ -111,5 +111,8 @@ class MsGateway(object):
         self.logger.addHandler(handler)
 
     def on_login_success(self):
-        # Dingding.send_msg('ctp行情服务启动成功')
-        pass
+        Dingding.send_msg('ctp行情服务启动成功')
+        # pass
+
+    def send_msg(self, message):
+        Dingding.send_msg(message)

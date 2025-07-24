@@ -4,6 +4,8 @@ import os
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.strategys.bid import BidStrategy
 from BoQuantitativeSystem.strategys.breakout import BreakoutStrategy
+from BoQuantitativeSystem.strategys.stop_loss import StopLoss
+from BoQuantitativeSystem.utils.sys_exception import common_exception
 
 
 class PortfolioProcess:
@@ -18,9 +20,10 @@ class PortfolioProcess:
 
         self.load_strategy()
 
+    # @common_exception(log_flag=True)
     def on_quote(self, quote):
-        print('quote', quote)
-        return
+        # print('quote', quote)
+        # return
 
         for strategy in self.strategy_list:
             strategy.cal_indicator(quote)
@@ -32,10 +35,17 @@ class PortfolioProcess:
         if 'breakout' in self.params['strategy_name']:
             b = BreakoutStrategy(self, self.params)
             self.strategy_list.append(b)
+            self.logger.info(f'<load_strategy>: breakout params={self.params}')
 
         if 'bid' in self.params['strategy_name']:
             b = BidStrategy(self, self.params)
             self.strategy_list.append(b)
+            self.logger.info(f'<load_strategy>: bid params={self.params}')
+
+        if 'stop_loss' in self.params['strategy_name']:
+            b = StopLoss(self, self.params)
+            self.strategy_list.append(b)
+            self.logger.info(f'<load_strategy>: stop_loss params={self.params}')
 
     def create_logger(self):
         if not os.path.exists(Configs.root_fp + 'logs/strategy_logs'):
