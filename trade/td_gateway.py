@@ -28,7 +28,8 @@ class TDGateway:
 
     @common_exception(log_flag=True)
     def on_query_account(self, data):
-        self.logger.info(f"<on_query_account> data={data}")
+        # self.logger.info(f"<on_query_account> data={data}")
+        pass
 
     @common_exception(log_flag=True)
     def on_account_update(self):

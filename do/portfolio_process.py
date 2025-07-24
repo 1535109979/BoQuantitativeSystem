@@ -22,7 +22,7 @@ class PortfolioProcess:
 
     # @common_exception(log_flag=True)
     def on_quote(self, quote):
-        # print('quote', quote)
+        print('quote', quote)
         # return
 
         for strategy in self.strategy_list:

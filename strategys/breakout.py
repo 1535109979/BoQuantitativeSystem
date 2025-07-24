@@ -49,7 +49,7 @@ class BreakoutStrategy:
         self.regressio_flag = None
         self.trend_flag = None
 
-        if not quote.get('is_closed', 0):
+        if not int(quote.get('is_closed', 0)):
             return
 
         last_price = float(quote['last_price'])
@@ -107,7 +107,7 @@ class BreakoutStrategy:
         instrument = quote['symbol']
         last_price = quote['last_price']
 
-        if not quote.get('is_closed', 0):
+        if not int(quote.get('is_closed', 0)):
             return
 
         self.strategy_process.logger.info(f'<cal_singal> signal_flag={self.signal_flag}')

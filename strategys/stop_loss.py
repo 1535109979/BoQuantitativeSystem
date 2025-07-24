@@ -12,7 +12,7 @@ class StopLoss:
         pass
 
     def cal_singal(self, quote):
-        if not quote.get('is_closed', 0):
+        if not int(quote.get('is_closed', 0)):
             return
         last_price = float(quote['last_price'])
         instrument = quote['symbol']
