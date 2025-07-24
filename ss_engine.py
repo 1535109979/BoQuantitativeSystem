@@ -4,6 +4,8 @@ import sqlite3
 
 import pandas as pd
 
+from binance.um_futures import UMFutures
+
 from BoQuantitativeSystem.backtest.read_db import ReadDB
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.do.portfolio_process import PortfolioProcess
@@ -30,6 +32,7 @@ class SsEngine:
             self.run_backtest()
 
         elif self.engine_mode == 'trade':
+            self.kline_client = UMFutures()
             self.ms_stub = MarketStub()
             self.td_gateway = TDGateway(self)
             self.load_portfolio_config()

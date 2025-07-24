@@ -1,5 +1,9 @@
 import logging
 import os
+import time
+from datetime import datetime, timedelta
+
+import pandas
 
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.strategys.bid import BidStrategy
@@ -22,7 +26,7 @@ class PortfolioProcess:
 
     # @common_exception(log_flag=True)
     def on_quote(self, quote):
-        print('quote', quote)
+        # print('quote', quote)
         # return
 
         for strategy in self.strategy_list:
@@ -33,6 +37,7 @@ class PortfolioProcess:
 
     def load_strategy(self):
         if 'breakout' in self.params['strategy_name']:
+            self.get_klines()
             b = BreakoutStrategy(self, self.params)
             self.strategy_list.append(b)
             self.logger.info(f'<load_strategy>: breakout params={self.params}')
@@ -46,6 +51,32 @@ class PortfolioProcess:
             b = StopLoss(self, self.params)
             self.strategy_list.append(b)
             self.logger.info(f'<load_strategy>: stop_loss params={self.params}')
+
+    def get_klines(self, min_save_window=2100):
+        st_time = int(time.time()) - min_save_window * 60
+        end_time = int(time.time())
+        self.download_data(st_time, end_time, self.params['instrument'], "1m")
+
+    @common_exception(log_flag=True)
+    def download_data(self, start_time, end_time, symbol='BTCUSDT', interval='1m'):
+        st_time = start_time
+
+        while st_time < end_time:
+            df = self.get_future_data(st_time, symbol, interval)
+            self.latest_price_list += df['close'].astype(float).to_list()
+            st_time = st_time + 1000 * 60
+
+    def get_future_data(self, st_time, symbol='BTCUSDT', interval='1m'):
+        data = self.engine.kline_client.klines(symbol, interval, limit=1000, startTime=int(st_time) * 1000)
+        df = pandas.DataFrame(data)
+        df.columns = ['start_time', 'open', 'high', 'low', 'close', 'vol', 'end_time',
+                      'quote_asset_vol', 'number_of_trade', 'base_asset_volume', 'quote_asset_volume', 'n']
+        df['start_time'] = df['start_time'].apply(lambda x: datetime.fromtimestamp(x / 1000))
+        df['close_time'] = df['start_time'].apply(lambda x: x + timedelta(minutes=1))
+        df['end_time'] = df['end_time'].apply(lambda x: datetime.fromtimestamp(x / 1000))
+        df = df.sort_values(by='close_time')
+        df = df[df['close_time'] <= datetime.now()]
+        return df
 
     def create_logger(self):
         if not os.path.exists(Configs.root_fp + 'logs/strategy_logs'):
