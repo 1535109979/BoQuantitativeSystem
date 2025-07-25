@@ -79,6 +79,6 @@ class AccountBook:
             if pb.short_position.cost_amount:
                 self.position_sum_cost += pb.short_position.cost_amount
 
-        if self.balance and self.position_cost:
+        if self.balance and self.position_sum_cost:
             self.position_multi = round(self.position_sum_cost / self.balance, 2)
 
