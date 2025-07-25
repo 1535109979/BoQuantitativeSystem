@@ -211,11 +211,9 @@ class BiFutureTd:
         data: dict = self.client.account(**self._get_req_data())
         self.gateway.on_query_account(data)
         # self.logger.debug(f"<query_account> data.keys=%s", data.keys())
-        self.account_book.update_data(data)
-        self.logger.info(f'walletBalance={data.get("walletBalance")}')
-        self.logger.info(f'avail={self.account_book.avail} '
-                         f'balance={self.account_book.balance} '
-                         f'position_multi={self.account_book.position_multi}')
+        # self.account_book.update_data(data)
+        # self.logger.info(f'walletBalance={data.get("walletBalance")}')
+
         self._on_assets_data(data=data.get("assets"))
 
         # 更新账户持仓字典 (为防止并发更新问题, 启动完成后不再全量设置持仓信息)
@@ -231,6 +229,9 @@ class BiFutureTd:
             if self.account_book.base_instrument == d.get("asset"):
                 self.logger.info("<on_assets_data> %s", d)
                 self.account_book.update_data(data=d)
+                self.logger.info(f'avail={self.account_book.avail} '
+                                 f'balance={self.account_book.balance} '
+                                 f'position_multi={self.account_book.position_multi}')
                 return True
         return False
 

@@ -30,7 +30,6 @@ class AccountBook:
             number=data.get("availableBalance"), precision=8, default=0)
         self.balance = type_util.get_precision_number(
             number=data.get("walletBalance"), precision=8, default=0)
-        print(self.avail, self.balance)
         self.cal_position_multi()
 
     def create_instrument_book(self, vt_symbol: str):
