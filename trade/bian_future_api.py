@@ -212,6 +212,7 @@ class BiFutureTd:
         self.gateway.on_query_account(data)
         # self.logger.debug(f"<query_account> data.keys=%s", data.keys())
         self.account_book.update_data(data)
+        self.logger.info(f'walletBalance={data.get("walletBalance")}')
         self.logger.info(f'avail={self.account_book.avail} '
                          f'balance={self.account_book.balance} '
                          f'position_multi={self.account_book.position_multi}')

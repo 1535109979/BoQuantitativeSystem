@@ -14,6 +14,7 @@ class AccountBook:
     avail: float = 0
     balance: float = 0
     position_multi: float = 0
+    position_sum_cost: float = 0
 
     base_instrument: str = field(default="USDT")
     data: dict = field(default_factory=dict)
@@ -29,7 +30,7 @@ class AccountBook:
             number=data.get("availableBalance"), precision=8, default=0)
         self.balance = type_util.get_precision_number(
             number=data.get("walletBalance"), precision=8, default=0)
-
+        print(self.avail, self.balance)
         self.cal_position_multi()
 
     def create_instrument_book(self, vt_symbol: str):
@@ -71,13 +72,13 @@ class AccountBook:
         return position
 
     def cal_position_multi(self):
-        position_cost = 0
+        self.position_sum_cost = 0
         for k, pb in self.position_books.items():
             if pb.long_position.cost_amount:
-                position_cost += pb.long_position.cost_amount
+                self.position_sum_cost += pb.long_position.cost_amount
             if pb.short_position.cost_amount:
-                position_cost += pb.short_position.cost_amount
+                self.position_sum_cost += pb.short_position.cost_amount
 
-        if self.balance and position_cost:
-            self.position_multi = round(position_cost / self.balance, 2)
+        if self.balance and self.position_cost:
+            self.position_multi = round(self.position_sum_cost / self.balance, 2)
 

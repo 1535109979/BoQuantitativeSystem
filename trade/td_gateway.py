@@ -5,7 +5,9 @@ from datetime import datetime
 from decimal import Decimal
 
 from BoQuantitativeSystem.config.config import Configs
+from BoQuantitativeSystem.database.dbm import AccountValue
 from BoQuantitativeSystem.trade.bian_future_api import BiFutureTd
+from BoQuantitativeSystem.utils.aio_timer import AioTimer
 from BoQuantitativeSystem.utils.dingding import Dingding
 from BoQuantitativeSystem.utils.exchange_enum import ExchangeType, OffsetFlag, Direction, OrderPriceType
 from BoQuantitativeSystem.utils.sys_exception import common_exception
@@ -16,7 +18,7 @@ class TDGateway:
         self.logger = ss_gateway.logger
         self.client = None
         self.account_book = None
-
+        self._save_account_data_timer(interval=3600)
         self.connect()
 
     def connect(self):
@@ -88,6 +90,23 @@ class TDGateway:
             **req, **kwargs)
 
         return client_order_id
+
+    def save_account_value(self):
+        save_data = AccountValue(
+            balance=self.account_book.balance,
+            position_sum_cost=self.account_book.position_sum_cost,
+            position_multi=self.account_book.position_multi,
+            update_time=datetime.now(),
+        )
+        save_data.save()
+
+    def _save_account_data_timer(self, interval):
+        def _func():
+            self._save_account_data_timer(interval)
+
+            self.save_account_value()
+
+        AioTimer.new_timer(_delay=interval, _func=_func)
 
     @common_exception(log_flag=True)
     def on_order(self, rtn_order):
