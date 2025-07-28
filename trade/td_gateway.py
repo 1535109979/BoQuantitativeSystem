@@ -56,7 +56,7 @@ class TDGateway:
         for param in Configs.strategy_list:
             if instrument == param.get('instrument'):
                 order_step_muti = param['order_step_muti']
-
+        print('price', price)
         if offset_flag == OffsetFlag.OPEN:
             if direction == Direction.LONG:
                 trade_price = Decimal(price) + Decimal(min_price_step) * order_step_muti
@@ -67,11 +67,12 @@ class TDGateway:
                 trade_price = Decimal(price) - Decimal(min_price_step) * order_step_muti
             elif direction == Direction.SHORT:
                 trade_price = Decimal(price) + Decimal(min_price_step) * order_step_muti
+        print('trade_price', trade_price)
 
         if 'cash' in kwargs:
             volume = kwargs['cash'] / float(price)
             volume = round(volume * min_volume_muti) / min_volume_muti
-            self.logger.info(f'cal vol: min_volume_muti={min_volume_muti} cash={kwargs["cash"]} '
+            self.logger.info(f'use cash cal vol: min_volume_muti={min_volume_muti} cash={kwargs["cash"]} '
                              f'price={trade_price} volume={volume} order_step_muti={order_step_muti}')
 
         req = {
