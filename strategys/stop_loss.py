@@ -1,6 +1,6 @@
+from BoQuantitativeSystem.trade.do.position import InstrumentPosition
+from BoQuantitativeSystem.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 from BoQuantitativeSystem.utils.sys_exception import common_exception
-from song_binance_client.trade.do.position import InstrumentPosition
-from song_binance_client.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 
 
 class StopLoss:
