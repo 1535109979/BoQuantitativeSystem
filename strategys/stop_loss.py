@@ -36,7 +36,7 @@ class StopLoss:
 
         if short_position.cost:
             decline_rate = 1 - last_price / short_position.cost
-            self.strategy_process.logger.info(f'last_price={last_price} decline_rate={decline_rate} stop_loss_rate={self.stop_loss_rate}')
+            self.strategy_process.logger.info(f'<cal loss> last_price={last_price} decline_rate={decline_rate} stop_loss_rate={self.stop_loss_rate}')
 
             if decline_rate < -self.stop_loss_rate:
                 self.strategy_process.td_gateway.insert_order(instrument, OffsetFlag.CLOSE, Direction.SHORT,

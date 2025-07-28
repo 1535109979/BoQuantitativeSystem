@@ -38,7 +38,7 @@ class Configs:
         {'instrument': '1000RATSUSDT', 'cash': 10,
          'windows': 500, 'roll_mean_period': 500, 'interval_period': 400,
          'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
-         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
+         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0,
          'cover_count': 0, 'last_couer_price': 0,
          'peak': 0, 'tough': 0,
          'cover_muti_list': [2, 4, 8, 16, 32, 64],
