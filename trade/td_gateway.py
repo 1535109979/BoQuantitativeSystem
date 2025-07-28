@@ -66,7 +66,10 @@ class TDGateway:
             if direction == Direction.LONG:
                 trade_price = Decimal(price) - Decimal(min_price_step) * order_step_muti
             elif direction == Direction.SHORT:
+                print('close short')
                 trade_price = Decimal(price) + Decimal(min_price_step) * order_step_muti
+                print(trade_price)
+
         print('trade_price', trade_price)
 
         if 'cash' in kwargs:
