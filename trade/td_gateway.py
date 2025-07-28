@@ -56,7 +56,7 @@ class TDGateway:
         for param in Configs.strategy_list:
             if instrument == param.get('instrument'):
                 order_step_muti = param['order_step_muti']
-        print('price', price)
+        print('price', price, offset_flag, direction, order_step_muti, min_price_step)
         if offset_flag == OffsetFlag.OPEN:
             if direction == Direction.LONG:
                 trade_price = Decimal(price) + Decimal(min_price_step) * order_step_muti
