@@ -231,6 +231,7 @@ class BiFutureTd:
                 self.account_book.update_data(data=d)
                 self.logger.info(f'avail={self.account_book.avail} '
                                  f'balance={self.account_book.balance} '
+                                 f'position_sum_cost={self.account_book.position_sum_cost} '
                                  f'position_multi={self.account_book.position_multi}')
                 return True
         return False
