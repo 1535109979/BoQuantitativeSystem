@@ -46,7 +46,7 @@ class Configs:
          'stop_profit_rate': 1.3,
          },
 
-        {'instrument': 'AKICEUSDT', 'cash': 10,
+        {'instrument': 'ALICEUSDT', 'cash': 10,
          'windows': 100, 'roll_mean_period': 200, 'interval_period': 400,
          'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
          'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
