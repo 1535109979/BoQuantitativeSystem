@@ -16,10 +16,14 @@ class Configs:
 
 
     if system == 'Darwin':
-        root_fp = '/Users/edy/byt_pub/BoQuantitativeSystem/'
+        root_fp = '/Users/edy/a_songbo/'
 
     elif system == 'Linux':
-        root_fp = '/a_songbo/BoQuantitativeSystem/'
+        root_fp = '/a_songbo/'
+
+    for fp in [root_fp + 'database/', root_fp + 'logs/']:
+        if not os.path.exists(fp):
+            os.mkdir(fp)
 
     # stop_loss breakout bid
     strategy_list = [

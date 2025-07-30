@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from datetime import datetime
 
 from peewee import *
@@ -11,6 +12,7 @@ class SqliteDatabaseManage:
         self.data_fp = Configs.root_fp + 'database/'
 
     def get_connect(self, db_name=''):
+
         db_fp = self.data_fp + 'bian_f_data.db'
         db = SqliteDatabase(db_fp)
         db.connect()
@@ -95,10 +97,10 @@ if __name__ == '__main__':
     # RtnTrade.create_table()
     # Subtest.create_table()
     # TableLatestTime.create_table()
-
-    AccountValue.create_table()
-    OrderInfo.create_table()
-    TradeInfo.create_table()
+    SqliteDatabaseManage()
+    # AccountValue.create_table()
+    # OrderInfo.create_table()
+    # TradeInfo.create_table()
 
     # account_values = AccountValue.select()
     # for account in account_values:
