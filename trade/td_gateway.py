@@ -5,7 +5,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from BoQuantitativeSystem.config.config import Configs
-from BoQuantitativeSystem.database.dbm import AccountValue
+from BoQuantitativeSystem.database.dbm import AccountValue, TradeInfo
 from BoQuantitativeSystem.trade.bian_future_api import BiFutureTd
 from BoQuantitativeSystem.utils.aio_timer import AioTimer
 from BoQuantitativeSystem.utils.dingding import Dingding
@@ -90,6 +90,7 @@ class TDGateway:
 
         return client_order_id
 
+    @common_exception(log_flag=True)
     def save_account_value(self):
         save_data = AccountValue(
             balance=self.account_book.balance,
@@ -113,7 +114,23 @@ class TDGateway:
 
     @common_exception(log_flag=True)
     def on_trade(self, rtn_trade):
-        pass
+        trade_data = TradeInfo(
+            instrument = rtn_trade.instrument,
+            order_id = rtn_trade.order_id,
+            client_id = rtn_trade.client_id,
+            offset = rtn_trade.offset,
+            side = rtn_trade.side,
+            volume = rtn_trade.volume,
+            price = rtn_trade.price,
+            trading_day = rtn_trade.trading_day,
+            trade_time = rtn_trade.trade_time,
+            profit = rtn_trade.profit,
+            commission = rtn_trade.commission,
+            commission_asset = rtn_trade.commission_asset,
+            update_time = datetime.now(),
+        )
+        self.logger.info(f'<on_trade> save trade_data={trade_data}')
+        trade_data.save()
 
     def get_api_configs(self):
         return Configs.crypto_setting
