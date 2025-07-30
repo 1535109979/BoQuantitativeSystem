@@ -114,6 +114,7 @@ class TDGateway:
 
     @common_exception(log_flag=True)
     def on_trade(self, rtn_trade):
+        self.logger.info(f'<on_trade> save trade_data={rtn_trade}')
         trade_data = TradeInfo(
             instrument = rtn_trade.instrument,
             order_id = rtn_trade.order_id,
@@ -129,7 +130,6 @@ class TDGateway:
             commission_asset = rtn_trade.commission_asset,
             update_time = datetime.now(),
         )
-        self.logger.info(f'<on_trade> save trade_data={trade_data}')
         trade_data.save()
 
     def get_api_configs(self):
