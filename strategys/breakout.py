@@ -7,7 +7,7 @@ from BoQuantitativeSystem.trade.do.position import InstrumentPosition
 from BoQuantitativeSystem.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 from decimal import Decimal
 
-from song_binance_client.utils.sys_exception import common_exception
+from BoQuantitativeSystem.utils.sys_exception import common_exception
 
 
 class BreakoutStrategy:
