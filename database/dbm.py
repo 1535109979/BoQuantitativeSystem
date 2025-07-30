@@ -97,10 +97,10 @@ if __name__ == '__main__':
     # RtnTrade.create_table()
     # Subtest.create_table()
     # TableLatestTime.create_table()
-    SqliteDatabaseManage()
-    # AccountValue.create_table()
-    # OrderInfo.create_table()
-    # TradeInfo.create_table()
+    # SqliteDatabaseManage()
+    AccountValue.create_table()
+    OrderInfo.create_table()
+    TradeInfo.create_table()
 
     # account_values = AccountValue.select()
     # for account in account_values:
