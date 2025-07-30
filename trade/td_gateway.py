@@ -119,7 +119,7 @@ class TDGateway:
             instrument = rtn_trade.instrument,
             order_id = rtn_trade.order_id,
             client_id = rtn_trade.client_id,
-            offset = rtn_trade.offset,
+            offset = rtn_trade.offset_flag,
             side = rtn_trade.side,
             volume = rtn_trade.volume,
             price = rtn_trade.price,

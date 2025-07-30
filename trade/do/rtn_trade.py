@@ -29,7 +29,7 @@ class RtnTrade:
             instrument_category=rtn_order.instrument_category,
             instrument_type=rtn_order.instrument_type,
             instrument=rtn_order.instrument,
-            offset=rtn_order.offset_flag,
+            offset_flag=rtn_order.offset_flag,
             side=rtn_order.direction,
             hedge_flag=rtn_order.hedge_flag,
             volume=type_util.convert_to_float(data["l"]),
@@ -100,7 +100,7 @@ class RtnTrade:
 
     @property
     def offset_flag(self) -> OffsetFlag:
-        return OffsetFlag.get_by_value(self.data["offset"])
+        return OffsetFlag.get_by_value(self.data["offset_flag"])
 
     @property
     def direction(self) -> Direction:
