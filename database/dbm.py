@@ -25,7 +25,7 @@ class TradeInfo(Model):
     order_id = CharField()
     client_id = CharField()
     offset = CharField()
-    side = CharField()
+    direction = CharField()
     volume = FloatField()
     price = FloatField()
     trading_day = CharField()
