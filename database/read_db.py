@@ -8,7 +8,9 @@ with sqlite3.connect(Configs.root_fp + 'database/' + 'bian_f_data.db') as conn:
     df = pd.read_sql('select * from account_value', conn)
     print(df)
     df = pd.read_sql('select * from trade_info', conn)
+    result = df.groupby('instrument')[['profit', 'commission']].sum().reset_index()
     print(df)
+    print(result)
     df = pd.read_sql('select * from order_info', conn)
     print(df)
 
