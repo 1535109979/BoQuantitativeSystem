@@ -9,6 +9,8 @@ with sqlite3.connect(Configs.root_fp + 'database/' + 'bian_f_data.db') as conn:
     print(df)
     df = pd.read_sql('select * from TradeInfo', conn)
     print(df)
+    df = pd.read_sql('select * from OrderInfo', conn)
+    print(df)
 
 
 
