@@ -232,6 +232,7 @@ class BiFutureTd:
             submit(_executor=self.on_data_thread_pool, _fn=self._on_positions_data)
             self.query_position_risk()
 
+    @common_exception(log_flag=True)
     def query_position_risk(self, instrument: str = None) -> Optional[List[dict]]:
         if not self.client:
             self.logger.warning(f"当前状态无法发起请求! client:{self.client}")
