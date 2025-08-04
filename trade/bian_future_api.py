@@ -3,6 +3,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from typing import Optional, Dict, List
+from threading import RLock
 
 from binance.error import ClientError
 from binance.um_futures import UMFutures
@@ -59,6 +60,11 @@ class BiFutureTd:
         self._listen_client = None
         self._listen_key: Optional[str] = None
         self._listen_last_ping_ts: Optional[float] = 0
+
+        # 暂存收到账户持仓信息的回报
+        self._positions_rtn: Optional[List[dict]] = list()
+        # 修改以上属性时需要锁
+        self._data_lock = RLock()
 
         # self._add_restart_listen_timer()
         # query account   check ping
@@ -175,7 +181,7 @@ class BiFutureTd:
     def close(self):
         """ 关闭连接 """
         self.ready = False
-        self.logger.info('ts api close')
+        self.logger.info('close ts api')
 
         if self._listen_client:
             self._listen_client.stop()
@@ -218,7 +224,29 @@ class BiFutureTd:
 
         # 更新账户持仓字典 (为防止并发更新问题, 启动完成后不再全量设置持仓信息)
         if not self.ready:
-            self._on_positions_data(data=data.get("positions"))
+            if data.get("positions"):
+                positions_data = data.pop("positions")
+                if positions_data:
+                    with self._data_lock:
+                        self._positions_rtn.extend(positions_data)
+            submit(_executor=self.on_data_thread_pool, _fn=self._on_positions_data)
+            self.query_position_risk()
+
+    def query_position_risk(self, instrument: str = None) -> Optional[List[dict]]:
+        if not self.client:
+            self.logger.warning(f"当前状态无法发起请求! client:{self.client}")
+            return
+        req_ts = time.time() * 1000
+        req = self._get_req_data(symbol=instrument)
+        self.logger.info(f"<client.get_position_risk> {req_ts} req={req}")
+        result: List[dict] = self.client.sign_request("GET", "/fapi/v3/positionRisk", req)
+        self.logger.info(f"<client.get_position_risk> "
+                         f"{req_ts} result.len={len(result) if result else 0} "
+                         f"ts={round(time.time() * 1000 - req_ts, 3)}")
+        if result:
+            with self._data_lock:
+                self._positions_rtn.extend(result)
+            submit(_executor=self.on_data_thread_pool, _fn=self._on_positions_data)
 
     @common_exception(log_flag=True)
     def _on_assets_data(self, data: List[dict]):
@@ -238,10 +266,10 @@ class BiFutureTd:
         return False
 
     @common_exception(log_flag=True)
-    def _on_positions_data(self, data: List[dict]):
-        if not data:
+    def _on_positions_data(self):
+        if not self._positions_rtn:
             return
-        for d in data:
+        for d in self._positions_rtn:
             if not d.get("updateTime"):
                 continue
             self.logger.info("<on_positions_data> %s", d)
@@ -256,6 +284,7 @@ class BiFutureTd:
                 self.logger.info("<position update_by_datas> %s", position)
                 if self.ready:
                     self._check_position_consistency(position, old_volume, old_cost)
+        self._positions_rtn.clear()
 
     def _check_position_consistency(self, position, volume, cost):
         inconsistency = volume != position.volume

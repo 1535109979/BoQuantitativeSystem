@@ -37,6 +37,10 @@ class InstrumentPosition:
     trade_ids: list = field(default_factory=list)
 
     def update_by_datas(self, data: dict) -> bool:
+        """{'symbol': 'BAKEUSDT', 'positionSide': 'SHORT', 'positionAmt': '-119',
+        'unrealizedProfit': '0.21570892', 'isolatedMargin': '0', 'notional': '-9.82789108',
+        'isolatedWallet': '0', 'initialMargin': '0.24569728', 'maintMargin': '0.19655782',
+        'updateTime': 1754014980404}"""
         if not data:
             return False
         self.default = False
@@ -120,3 +124,10 @@ class InstrumentPositionBook:
         else:
             return self.long_position
 
+    def __str__(self):
+        if self.long_position.volume:
+            return (f'volume={self.long_position.volume} cost={self.long_position.cost} '
+                    f'cost_amount={self.long_position.cost_amount} open_amount={self.long_position.open_amount}')
+        if self.short_position.volume:
+            return (f'volume={self.short_position.volume} cost={self.short_position.cost} '
+                    f'cost_amount={self.long_position.cost_amount} open_amount={self.long_position.open_amount}')
