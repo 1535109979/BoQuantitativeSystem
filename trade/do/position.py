@@ -124,10 +124,10 @@ class InstrumentPositionBook:
         else:
             return self.long_position
 
-    def __str__(self):
-        if self.long_position.volume > 0:
-            return (f'volume={self.long_position.volume} cost={self.long_position.cost} '
-                    f'cost_amount={self.long_position.cost_amount} open_amount={self.long_position.open_amount}')
-        if self.short_position.volume > 0:
-            return (f'volume={self.short_position.volume} cost={self.short_position.cost} '
-                    f'cost_amount={self.long_position.cost_amount} open_amount={self.long_position.open_amount}')
+    # def __str__(self):
+    #     if self.long_position.volume > 0:
+    #         return (f'volume={self.long_position.volume} cost={self.long_position.cost} '
+    #                 f'cost_amount={self.long_position.cost_amount} open_amount={self.long_position.open_amount}')
+    #     if self.short_position.volume > 0:
+    #         return (f'volume={self.short_position.volume} cost={self.short_position.cost} '
+    #                 f'cost_amount={self.long_position.cost_amount} open_amount={self.long_position.open_amount}')

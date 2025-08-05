@@ -1,10 +1,11 @@
 import sqlite3
 from datetime import datetime
 
-import matplotlib.dates as mdates
+import pandas
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import matplotlib.pyplot as plt
+pandas.set_option("expand_frame_repr", False)
+pandas.set_option("display.max_rows", 2000)
 import numpy as np
 import pandas as pd
 
@@ -32,9 +33,6 @@ with sqlite3.connect(Configs.root_fp + 'database/' + 'bian_f_data.db') as conn:
     days_since_first = (now - first_time).dt.total_seconds() / (24 * 3600)
     days_df = (days_since_first.reset_index().rename(columns={'update_time': 'days_from_first'}).round(2))
     group_gain = pd.merge(group_gain, days_df, on='instrument', how='left')
-
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
 
     # 计算表格行高：每行 28 px + 表头 30 px
     table_height = 30 + 28 * len(group_gain)
