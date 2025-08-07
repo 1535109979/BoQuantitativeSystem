@@ -184,7 +184,7 @@ class BiFutureTd:
         self.logger.info('close ts api')
 
         if self._listen_client:
-            self._listen_last_ping_ts = None
+            self._listen_last_ping_ts = 0
             self._listen_client.stop()
             self._listen_client = None
 
