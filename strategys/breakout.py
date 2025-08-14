@@ -18,7 +18,7 @@ class BreakoutStrategy:
         self.params = params
         self.open_direction = Direction.LONG
         self.windows = params['windows']
-        self.open_volume = params['open_volume']
+        self.open_volume = params.get('open_volume')
         self.interval_period = params['interval_period']
         self.roll_mean_period = params['roll_mean_period']
         self.min_save_window = max(self.windows, self.interval_period * 2 + self.roll_mean_period)

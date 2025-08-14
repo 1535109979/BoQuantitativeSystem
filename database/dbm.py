@@ -73,16 +73,6 @@ class AccountValue(Model):
         table_name = 'account_value'
 
 
-class TableLatestTime(Model):
-    id = AutoField(primary_key=True)
-    table_name = CharField()
-    update_time = DateTimeField()
-
-    class Meta:
-        database = SqliteDatabaseManage().get_connect()
-        table_name = 'tables_latest_update_time'
-
-
 class Subtest(Model):
     id = AutoField(primary_key=True)
     balance = FloatField()

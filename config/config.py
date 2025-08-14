@@ -123,5 +123,15 @@ class Configs:
         'secret_key': 'uUH1X2sz5jnMVhL44zxHiphnxhoQ5swPs62gFg4JFLCRayWwFr2MZJm9dJlaM2WK',
         # 'api_key': 'tw8xvSqYAXfqqTHWBKKuvETUcJ6w9BttMG6QIb7q7CceVrl74RdeChxeg05zfDg2',     # hui
         # 'secret_key': '81b9bXaVU7t0QhRQrFB5NfulRYYO7IFiR2D3rLOdrSlbGA2NYwxBvIy09JQPC1dL',
+        # 'api_key': 'R8cR2rb6822fDtpdL7nFX9fNsoC8WdaNfK4K38C8vQrbsHuuE8WmSne0t29gRsN8',     # chao
+        # 'secret_key': 'eHTwScKu61eYJSwzEe6tHcyavKOfROino1jncIuQnE8beMh4ljRXcXJD0Uzuadcj',
+    }
+
+    redis_setting = {
+        "host": "127.0.0.1",
+        "port": 6379,
+        "password": "123456",
+        "db": 1,
+        "max_connections": 100
     }
 

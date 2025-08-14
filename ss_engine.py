@@ -1,15 +1,22 @@
+import json
 import logging
 import os
 import sqlite3
+import threading
 
 import pandas as pd
+from dataclasses import dataclass, field, asdict
+from typing import Dict
 
+import redis
 from binance.um_futures import UMFutures
 
 from BoQuantitativeSystem.backtest.read_db import ReadDB
 from BoQuantitativeSystem.config.config import Configs
+from BoQuantitativeSystem.database.use_data import UseInstrumentConfig
 from BoQuantitativeSystem.do.portfolio_process import PortfolioProcess
 from BoQuantitativeSystem.market.ms_grpc_stub import MarketStub
+from BoQuantitativeSystem.strategys.books.use_instrument_config import UseInstrumentConfigBook
 from BoQuantitativeSystem.trade.td_gateway import TDGateway
 
 
@@ -17,7 +24,7 @@ class SsEngine:
     def __init__(self):
         self.engine_mode = Configs.engine_mode
         self.account_type = Configs.account_type
-
+        self.use_instrument_config: Dict[str, Dict[str, UseInstrumentConfigBook]] = {}
         self.portfolio_maps = {}
         self.td_gateway = None
         self.ms_stub = None
@@ -25,6 +32,23 @@ class SsEngine:
         self.create_logger()
 
         self.quote_data = []
+        self.r = redis.Redis(**Configs.redis_setting)
+        self.redis_client = self.r.pubsub()
+        self.sub_redis_thread = threading.Thread(target=self.subscribe_redis)
+
+    def subscribe_redis(self):
+        # 循环监听消息
+        for message in self.redis_client.listen():
+            # 调用消息处理函数处理接收到的消息
+            self.handle_redis_message(message)
+
+    def handle_redis_message(self, message):
+        self.logger.info(f'<handle_redis_message> message={message}')
+        if message['type'] == 'message':
+            message = json.loads(message['data'])
+            p = self.portfolio_maps[message['instrument']]
+            p.update_param(message)
+
 
     def start(self):
         if self.engine_mode == 'backtest':
@@ -34,10 +58,13 @@ class SsEngine:
         elif self.engine_mode == 'trade':
             self.kline_client = UMFutures()
             self.ms_stub = MarketStub()
-            self.td_gateway = TDGateway(self)
             self.load_portfolio_config()
-            # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=self.on_quote)
-            # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=self.on_quote)
+            self.sub_redis_thread.start()
+
+            self.td_gateway = TDGateway(self)
+
+            # # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=self.on_quote)
+            # # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=self.on_quote)
             MarketStub().subscribe_stream_in_new_thread(instruments=self.portfolio_maps.keys(), on_quote=self.on_quote)
             self.logger.info(f'subscribe instruments={self.portfolio_maps.keys()}')
 
@@ -45,11 +72,26 @@ class SsEngine:
 
 
     def load_portfolio_config(self):
-        # 加载策略配置
-        for instrument_config in Configs.strategy_list:
+        account_ids = [row.account_id for row in
+                       UseInstrumentConfig.select(UseInstrumentConfig.account_id).distinct()]
 
-            self.portfolio_maps[instrument_config['instrument']] = PortfolioProcess(self, instrument_config)
-            self.logger.info(f'<load_portfolio_config> {instrument_config}')
+        for account_id in account_ids:
+            rows = UseInstrumentConfig.select().where(UseInstrumentConfig.account_id == account_id)
+            self.use_instrument_config[account_id] = {r.instrument:UseInstrumentConfigBook.create_by_row(r)
+                                                      for r in rows}
+            self.redis_client.subscribe(account_id)
+
+        for account_id, use_instrument_config_books in self.use_instrument_config.items():
+            for instrument, instrument_config in use_instrument_config_books.items():
+                self.portfolio_maps[instrument] = PortfolioProcess(self, asdict(instrument_config))
+
+        # quit()
+        #
+        # # 加载策略配置
+        # for instrument_config in Configs.strategy_list:
+        #
+        #     self.portfolio_maps[instrument_config['instrument']] = PortfolioProcess(self, instrument_config)
+        #     self.logger.info(f'<load_portfolio_config> {instrument_config}')
 
     def load_data(self):
         if self.account_type == 'CRYPTO':

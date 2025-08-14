@@ -24,16 +24,22 @@ class PortfolioProcess:
 
         self.load_strategy()
 
-    # @common_exception(log_flag=True)
+    def update_param(self, params):
+        self.params = params
+        self.logger.info(f'<update_param> params={params}')
+        self.td_gateway.send_msg(f'update_param: params={params}')
+
+    @common_exception(log_flag=True)
     def on_quote(self, quote):
         # print('quote', quote)
-        # return
+        # print('on_quote', self.params)
 
-        for strategy in self.strategy_list:
-            strategy.cal_indicator(quote)
+        if self.params['status'] == 'ENABLE':
+            for strategy in self.strategy_list:
+                strategy.cal_indicator(quote)
 
-        for strategy in self.strategy_list:
-            strategy.cal_singal(quote)
+            for strategy in self.strategy_list:
+                strategy.cal_singal(quote)
 
     def load_strategy(self):
         if 'breakout' in self.params['strategy_name']:

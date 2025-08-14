@@ -20,7 +20,6 @@ class MarketStub:
         self.subscribe_stream(on_quote=on_quote, instruments=instruments)
 
     def subscribe_stream(self, on_quote, instruments=None):
-        print(instruments)
         if instruments:
             self.subscribed_instruments.update(set(instruments))
 
