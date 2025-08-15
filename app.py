@@ -4,8 +4,6 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 from BoQuantitativeSystem.database.dbm import AccountValue, TradeInfo
 from BoQuantitativeSystem.database.use_data import UseInstrumentConfig
-from a_songbo.binance_client.backtest.hour_data import table_name
-
 app = Flask(__name__)
 
 @app.route('/')
