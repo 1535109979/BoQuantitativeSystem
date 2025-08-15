@@ -17,9 +17,23 @@ class Configs:
 
     if system == 'Darwin':
         root_fp = '/Users/edy/a_songbo/'
+        redis_setting = {
+            "host": "127.0.0.1",
+            "port": 6379,
+            "password": "123456",
+            "db": 1,
+            "max_connections": 100
+        }
 
     elif system == 'Linux':
         root_fp = '/a_songbo/'
+        redis_setting = {
+            "host": "10.5.0.5",
+            "port": 6379,
+            "password": "123456",
+            "db": 1,
+            "max_connections": 100
+        }
 
     for fp in [root_fp + 'database/', root_fp + 'logs/']:
         if not os.path.exists(fp):
@@ -127,12 +141,5 @@ class Configs:
         # 'secret_key': 'eHTwScKu61eYJSwzEe6tHcyavKOfROino1jncIuQnE8beMh4ljRXcXJD0Uzuadcj',
     }
 
-    redis_setting = {
-        # "host": "43.155.76.153",
-        "host": "127.0.0.1",
-        "port": 6379,
-        "password": "123456",
-        "db": 1,
-        "max_connections": 100
-    }
+
 
