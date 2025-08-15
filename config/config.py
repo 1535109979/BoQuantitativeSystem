@@ -20,7 +20,7 @@ class Configs:
         redis_setting = {
             "host": "127.0.0.1",
             "port": 6379,
-            # "password": "123456",
+            "password": "123456",
             "db": 1,
             "max_connections": 100
         }

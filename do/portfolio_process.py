@@ -16,7 +16,6 @@ class PortfolioProcess:
 
     def __init__(self, engine, instrument_config):
         self.engine = engine
-        self.td_gateway = self.engine.td_gateway
         self.params = instrument_config
         self.create_logger()
         self.strategy_list = []
@@ -31,16 +30,14 @@ class PortfolioProcess:
 
     @common_exception(log_flag=True)
     def on_quote(self, quote):
-        print('quote', quote)
+        # print('quote', quote)
         # print('on_quote', self.params)
-
+        print(self.td_gateway)
         if self.params['status'] == 'ENABLE':
             for strategy in self.strategy_list:
-                print('----')
                 strategy.cal_indicator(quote)
 
             for strategy in self.strategy_list:
-                print('****')
                 strategy.cal_singal(quote)
 
     def load_strategy(self):
@@ -102,3 +99,7 @@ class PortfolioProcess:
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
+
+    @property
+    def td_gateway(self):
+        return self.engine.td_gateway
