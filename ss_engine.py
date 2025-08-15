@@ -18,6 +18,7 @@ from BoQuantitativeSystem.do.portfolio_process import PortfolioProcess
 from BoQuantitativeSystem.market.ms_grpc_stub import MarketStub
 from BoQuantitativeSystem.strategys.books.use_instrument_config import UseInstrumentConfigBook
 from BoQuantitativeSystem.trade.td_gateway import TDGateway
+from BoQuantitativeSystem.utils.sys_exception import common_exception
 
 
 class SsEngine:
@@ -68,9 +69,7 @@ class SsEngine:
             MarketStub().subscribe_stream_in_new_thread(instruments=self.portfolio_maps.keys(), on_quote=self.on_quote)
             self.logger.info(f'subscribe instruments={self.portfolio_maps.keys()}')
 
-
-
-
+    @common_exception(log_flag=True)
     def load_portfolio_config(self):
         account_ids = [row.account_id for row in
                        UseInstrumentConfig.select(UseInstrumentConfig.account_id).distinct()]
