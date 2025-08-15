@@ -1,6 +1,6 @@
 import redis
 redis_setting = {
-        "host":"43.155.76.153:6379",
+        "host":"43.155.76.153",
         "port": 6379,
         "password": "123456",
         "db": 1,
