@@ -128,7 +128,7 @@ class Configs:
     }
 
     redis_setting = {
-        "host": "127.0.0.1",
+        "host": "43.155.76.153",
         "port": 6379,
         "password": "123456",
         "db": 1,

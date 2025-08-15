@@ -31,14 +31,16 @@ class PortfolioProcess:
 
     @common_exception(log_flag=True)
     def on_quote(self, quote):
-        # print('quote', quote)
+        print('quote', quote)
         # print('on_quote', self.params)
 
         if self.params['status'] == 'ENABLE':
             for strategy in self.strategy_list:
+                print('----')
                 strategy.cal_indicator(quote)
 
             for strategy in self.strategy_list:
+                print('****')
                 strategy.cal_singal(quote)
 
     def load_strategy(self):
