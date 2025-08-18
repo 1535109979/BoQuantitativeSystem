@@ -43,8 +43,8 @@ class FlaskDBM:
 
 if __name__ == '__main__':
 
-    url = 'http://127.0.0.1:5050/'
-    # url = 'http://43.155.76.153:5050/'
+    # url = 'http://127.0.0.1:5050/'
+    url = 'http://43.155.76.153:5050/'
 
     dbm = FlaskDBM(url)
 

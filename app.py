@@ -44,7 +44,7 @@ def query_user_instrument_config():
     data = [
         {
             **row.__data__,  # 所有字段
-            'update_time': row.update_time.isoformat()
+            'update_time': row.update_time
         }
         for row in rows
     ]
@@ -148,6 +148,7 @@ def update_user_instrument_config():
     for key, value in payload.items():
         if hasattr(row, key):
             setattr(row, key, value)
+    row.update_time = datetime.now()
     row.save()
 
     return jsonify({"errcode": 0})
