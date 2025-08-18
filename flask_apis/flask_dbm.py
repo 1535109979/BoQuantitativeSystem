@@ -21,7 +21,7 @@ class FlaskDBM:
         try:
             response = requests.get(self.url+ 'query_table_data', params={'table_name': table_name}, headers=self.headers)
             response.raise_for_status()  # 检查请求是否成功
-            print("Response:", response.json())  # 打印响应内容
+            return response.json()
         except requests.exceptions.RequestException as e:
             print("An error occurred:", e)
 
@@ -42,8 +42,9 @@ if __name__ == '__main__':
 
     # dbm.query_all_user_instrument_config()
 
-    dbm.query_data(table_name='use_instrument_config')
-
+    data = dbm.query_data(table_name='use_instrument_config')
+    for row in data['data']:
+        print(row)
     # data = {
     #     "account_id": "bo",
     #     "instrument": "1000whyusdt",

@@ -48,7 +48,7 @@ class BreakoutStrategy:
     def cal_indicator(self, quote):
         self.regressio_flag = None
         self.trend_flag = None
-
+        print('cal_indicator',quote['instrument'], quote.get('is_closed', 0))
         if not int(quote.get('is_closed', 0)):
             return
 
@@ -106,7 +106,7 @@ class BreakoutStrategy:
     def cal_singal(self, quote):
         instrument = quote['symbol']
         last_price = quote['last_price']
-
+        print('cal_singal', quote['instrument'], quote.get('is_closed', 0))
         if not int(quote.get('is_closed', 0)):
             return
 
