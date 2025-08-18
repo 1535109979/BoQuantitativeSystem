@@ -60,28 +60,28 @@ if __name__ == '__main__':
     # for use_instrument_config in use_instrument_configs:
     #     print(use_instrument_config.__data__)
 
-    # update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument=='BAKEUSDT')
-    # update_date.update_time = datetime.now()
+    update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument=='BAKEUSDT')
+    update_date.update_time = datetime.now()
     # update_date.status = 'ENABLE'
-    # update_date.save()
+    update_date.save()
 
-
-    save_data = UseInstrumentConfig(
-        account_id='bo',
-        instrument='ALICEUSDT',
-        status='ENABLE',
-        cash=10,
-        windows=100,
-        roll_mean_period=200,
-        interval_period=400,
-        strategy_name=['stop_loss', 'breakout'],
-        open_direction='LONG',
-        stop_loss_rate=10,
-        stop_profit_rate=1.3,
-        order_price_delta=10,
-        order_price_type='LIMIT',
-        leverage=1,
-        param_json='',
-        update_time=datetime.now(),
-    )
-    save_data.save()
+    #
+    # save_data = UseInstrumentConfig(
+    #     account_id='bo',
+    #     instrument='ALICEUSDT',
+    #     status='ENABLE',
+    #     cash=10,
+    #     windows=100,
+    #     roll_mean_period=200,
+    #     interval_period=400,
+    #     strategy_name=['stop_loss', 'breakout'],
+    #     open_direction='LONG',
+    #     stop_loss_rate=10,
+    #     stop_profit_rate=1.3,
+    #     order_price_delta=10,
+    #     order_price_type='LIMIT',
+    #     leverage=1,
+    #     param_json='',
+    #     update_time=datetime.now(),
+    # )
+    # save_data.save()

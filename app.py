@@ -27,7 +27,7 @@ def query_table_data():
         data = [
             {
                 **row.__data__,  # 所有字段
-                'update_time': row.update_time.isoformat()
+                'update_time': row.update_time
             }
             for row in rows
         ]

@@ -25,7 +25,7 @@ class EngineSchedular:
     def start(self):
         self.scheduler.add_job(self.check_update_time, 'interval', seconds=5)
 
-        # self.check_update_time()
+        self.check_update_time()
         self.scheduler.start()
 
     def check_update_time(self):
@@ -37,7 +37,6 @@ class EngineSchedular:
         else:
             table_time_data = TableUpdatedTime.get(TableUpdatedTime.table_name == 'use_instrument_config')
             rows = (UseInstrumentConfig.select().where(UseInstrumentConfig.update_time > table_time_data.update_time))
-
             for row in rows:
                 self.redis_pub_client.publish(row.account_id, json.dumps(row.__data__, default=str))
                 self.logger.info(f'publish to {row.account_id} message={row.__data__}')

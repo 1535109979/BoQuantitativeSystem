@@ -30,7 +30,7 @@ class PortfolioProcess:
 
     @common_exception(log_flag=True)
     def on_quote(self, quote):
-        print('quote', quote)
+        # print('quote', quote)
         # print('on_quote', self.params)
         # print(self.td_gateway)
         if self.params['status'] == 'ENABLE':
