@@ -50,6 +50,9 @@ if __name__ == '__main__':
 
     # dbm.query_all_user_instrument_config()
 
+    data = dbm.query_data(table_name='table_updated_time')
+    print(data)
+
     data = dbm.query_data(table_name='use_instrument_config')
     for row in data['data']:
         print(row)
