@@ -107,7 +107,7 @@ class SsEngine:
 
     def on_quote(self, quote):
         quote = {k: str(v) for k, v in quote.items() if v is not None}
-        # print(quote)
+        print('quote', quote['symbol'])
         # return
         instrument = quote['symbol']
         p = self.portfolio_maps.get(instrument)
