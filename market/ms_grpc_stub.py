@@ -32,7 +32,7 @@ def on_quote(quote):
     print('get quote:', quote)
 
 if __name__ == '__main__':
-    MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=on_quote)
+    MarketStub().subscribe_stream_in_new_thread(instruments=['1000WHYUSDT'], on_quote=on_quote)
     # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=on_quote)
 
     while 1:

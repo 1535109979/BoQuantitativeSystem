@@ -17,6 +17,14 @@ class FlaskDBM:
         except requests.exceptions.RequestException as e:
             print("An error occurred:", e)
 
+    def update_user_instrument_config(self, data):
+        try:
+            response = requests.post(self.url+'update_user_instrument_config', data=json.dumps(data), headers=self.headers)
+            response.raise_for_status()  # 检查请求是否成功
+            print("Response:", response.json())  # 打印响应内容
+        except requests.exceptions.RequestException as e:
+            print("An error occurred:", e)
+
     def query_data(self, table_name):
         try:
             response = requests.get(self.url+ 'query_table_data', params={'table_name': table_name}, headers=self.headers)
@@ -45,6 +53,7 @@ if __name__ == '__main__':
     data = dbm.query_data(table_name='use_instrument_config')
     for row in data['data']:
         print(row)
+
     # data = {
     #     "account_id": "bo",
     #     "instrument": "1000whyusdt",
@@ -63,3 +72,7 @@ if __name__ == '__main__':
     #     "param_json": "{}"
     # }
     # dbm.add_user_instrument_config(data)
+
+
+
+    # dbm.update_user_instrument_config(data)

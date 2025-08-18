@@ -76,7 +76,7 @@ class SsEngine:
 
         for account_id in account_ids:
             rows = UseInstrumentConfig.select().where(UseInstrumentConfig.account_id == account_id)
-            self.use_instrument_config[account_id] = {r.instrument:UseInstrumentConfigBook.create_by_row(r)
+            self.use_instrument_config[account_id] = {str(r.instrument).upper():UseInstrumentConfigBook.create_by_row(r)
                                                       for r in rows}
             self.redis_client.subscribe(account_id)
 
@@ -107,7 +107,7 @@ class SsEngine:
 
     def on_quote(self, quote):
         quote = {k: str(v) for k, v in quote.items() if v is not None}
-        print('quote', quote['symbol'])
+        # print('quote', quote['symbol'])
         # return
         instrument = quote['symbol']
         p = self.portfolio_maps.get(instrument)
