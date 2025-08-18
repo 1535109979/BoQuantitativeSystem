@@ -44,6 +44,10 @@ class BreakoutStrategy:
                     self.am, numpy.ones(self.roll_mean_period) / self.roll_mean_period, mode="valid")
             self.roll_mean_list += list(price_ma_list)
 
+    def update_param(self):
+        self.load_last_price()
+        self.logger.info(f'BreakoutStrategy: params={self.params}')
+
     @common_exception(log_flag=True)
     def cal_indicator(self, quote):
         self.regressio_flag = None

@@ -25,8 +25,9 @@ class PortfolioProcess:
 
     def update_param(self, params):
         self.params = params
-        self.logger.info(f'<update_param> params={params}')
-        self.td_gateway.send_msg(f'update_param: params={params}')
+        self.get_klines()
+        self.logger.info(f'<PortfolioProcess update_param> params={params}')
+        self.td_gateway.send_msg(f'PortfolioProcess update_param: params={params}')
 
     @common_exception(log_flag=True)
     def on_quote(self, quote):
