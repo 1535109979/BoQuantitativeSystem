@@ -47,8 +47,13 @@ class SsEngine:
         self.logger.info(f'<handle_redis_message> message={message}')
         if message['type'] == 'message':
             message = json.loads(message['data'])
-            p = self.portfolio_maps[message['instrument']]
-            p.update_param(message)
+            instrument = message['instrument']
+            p = self.portfolio_maps.get(message['instrument'])
+            if p:
+                p.update_param(message)
+            else:
+                self.portfolio_maps[message['instrument']] = PortfolioProcess(self, message)
+                self.ms_stub.subscribe_stream_in_new_thread(instruments=[instrument], on_quote=self.on_quote)
 
 
     def start(self):
@@ -66,7 +71,7 @@ class SsEngine:
 
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=self.on_quote)
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=self.on_quote)
-            MarketStub().subscribe_stream_in_new_thread(instruments=self.portfolio_maps.keys(), on_quote=self.on_quote)
+            self.ms_stub.subscribe_stream_in_new_thread(instruments=self.portfolio_maps.keys(), on_quote=self.on_quote)
             self.logger.info(f'subscribe instruments={self.portfolio_maps.keys()}')
 
     @common_exception(log_flag=True)

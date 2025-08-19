@@ -73,8 +73,6 @@ class AccountBook:
     def cal_position_multi(self):
         self.position_sum_cost = 0
         for k, pb in self.position_books.items():
-            print(pb.long_position)
-            print(pb.short_position)
             if pb.long_position.cost_amount:
                 self.position_sum_cost += pb.long_position.cost_amount
             if pb.short_position.cost_amount:

@@ -31,9 +31,11 @@ class PortfolioProcess:
 
     @common_exception(log_flag=True)
     def on_quote(self, quote):
-        # print('quote', quote)
+        # print('quote', quote['symbol'], quote)
         # print('on_quote', self.params)
         # print(self.td_gateway)
+        # return
+
         if self.params['status'] == 'ENABLE':
             for strategy in self.strategy_list:
                 strategy.cal_indicator(quote)

@@ -145,7 +145,7 @@ class TDGateway:
 
     def send_start_msg(self, login_reqid):
         self.logger.info(f"<send_start_msg> {login_reqid}")
-        self.send_msg(f"<send_start_msg> td {login_reqid}")
+        # self.send_msg(f"<send_start_msg> td {login_reqid}")
 
     def on_front_disconnected(self, msg):
         self.logger.info(f"<on_front_disconnected> {msg}")
