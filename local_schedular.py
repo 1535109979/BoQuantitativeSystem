@@ -36,10 +36,10 @@ class EngineSchedular:
             self.logger.info(f'init save use_instrument_config {max_time}')
         else:
             table_time_data = TableUpdatedTime.get(TableUpdatedTime.table_name == 'use_instrument_config')
-            self.logger.info(f'use_instrument_config update_time:{table_time_data.update_time}')
+            self.logger.info(f'use_instrument_config max update_time:{table_time_data.update_time}')
             rows = (UseInstrumentConfig.select().where(UseInstrumentConfig.update_time > table_time_data.update_time))
             for row in rows:
-                self.logger.info(f'rows:{row.__data__}')
+                self.logger.info(f'updated rows:{row.__data__}')
                 self.redis_pub_client.publish(row.account_id, json.dumps(row.__data__, default=str))
                 self.logger.info(f'publish to {row.account_id} message={row.__data__}')
                 table_time_data.update_time = datetime.now()
