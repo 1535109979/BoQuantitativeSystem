@@ -54,6 +54,7 @@ class SsEngine:
             else:
                 self.portfolio_maps[message['instrument']] = PortfolioProcess(self, message)
                 self.ms_stub.subscribe_stream_in_new_thread(instruments=[instrument], on_quote=self.on_quote)
+                self.logger.info(f'<handle_redis_message> add instruments={message}')
 
 
     def start(self):
