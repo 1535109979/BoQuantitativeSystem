@@ -14,7 +14,7 @@ class SqliteDatabaseManage:
     def get_connect(self, db_name=''):
 
         db_fp = self.data_fp + 'bian_f_data.db'
-        db = SqliteDatabase(db_fp)
+        db = SqliteDatabase(db_fp, timeout=10)
         db.connect()
         return db
 
