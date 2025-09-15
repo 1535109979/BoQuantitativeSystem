@@ -255,6 +255,9 @@ class BiFutureTd:
             return
         # 遍历集合找到指定币的资产
         for d in data:
+            if d.get('asset') == 'BNB':
+                self.account_book.bnb = float(d.get("marginBalance"))
+
             if self.account_book.base_instrument == d.get("asset"):
                 self.logger.info("<on_assets_data> %s", d)
                 self.account_book.update_data(data=d)

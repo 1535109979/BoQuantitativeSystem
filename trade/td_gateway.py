@@ -14,7 +14,8 @@ from BoQuantitativeSystem.utils.sys_exception import common_exception
 
 
 class TDGateway:
-    def __init__(self, ss_gateway):
+    def __init__(self, ss_gateway, account_id):
+        self.account_id = account_id
         self.logger = ss_gateway.logger
         self.client = None
         self.account_book = None
@@ -133,7 +134,7 @@ class TDGateway:
         trade_data.save()
 
     def get_api_configs(self):
-        return Configs.crypto_setting
+        return Configs.get_setting(self.account_id)
 
     def send_position_error_msg(self, instrument, error):
         self.logger.error(f"<send_position_error_msg> {instrument} {error}")

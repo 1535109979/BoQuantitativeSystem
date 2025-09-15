@@ -15,6 +15,7 @@ class AccountBook:
     balance: float = 0
     position_multi: float = 0
     position_sum_cost: float = 0
+    bnb: float = 0
 
     base_instrument: str = field(default="USDT")
     data: dict = field(default_factory=dict)

@@ -89,17 +89,16 @@ class PortfolioProcess:
         return df
 
     def create_logger(self):
-        if not os.path.exists(Configs.root_fp + 'logs/strategy_logs'):
-            os.makedirs(Configs.root_fp + 'logs/strategy_logs')
+        os.makedirs(Configs.root_fp + f'logs/{self.engine.account_id}', exist_ok=True)
 
         self.logger = logging.getLogger(f'strategy_{self.params["instrument"]}')
         self.logger.setLevel(logging.DEBUG)
-        log_fp = Configs.root_fp + f'logs/strategy_logs/{self.params["instrument"]}.log'
+        log_fp = Configs.root_fp + f'logs/{self.engine.account_id}/{self.params["instrument"]}.log'
 
         from logging.handlers import TimedRotatingFileHandler
         handler = TimedRotatingFileHandler(log_fp, when="midnight", interval=1, backupCount=7)
         handler.suffix = "%Y-%m-%d.log"  # 设置滚动后文件的后缀
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - PID:%(process)d - %(message)s')
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 

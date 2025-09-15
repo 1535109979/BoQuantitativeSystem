@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from BoQuantitativeSystem.database.use_data import UseInstrumentConfig
 from BoQuantitativeSystem.trade.do.position import InstrumentPosition
 from BoQuantitativeSystem.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 from BoQuantitativeSystem.utils.sys_exception import common_exception
@@ -33,6 +36,7 @@ class StopLoss:
 
                 self.strategy_process.stop_loss_flag = True
                 self.strategy_process.logger.info(f'stop_loss=LONG')
+                self.stop_instrument(instrument)
 
         if short_position.cost:
             decline_rate = 1 - last_price / short_position.cost
@@ -43,3 +47,11 @@ class StopLoss:
                                              OrderPriceType.LIMIT, str(float(last_price)), short_position.volume)
                 self.strategy_process.stop_loss_flag = True
                 self.strategy_process.logger.info(f'stop_loss=short')
+                self.stop_instrument(instrument)
+
+    def stop_instrument(self, instrument):
+        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument==instrument)
+        update_date.update_time = datetime.now()
+        update_date.status = 'UNABLE'
+        update_date.save()
+        self.strategy_process.logger.info(f'stop_instrument: {instrument}')

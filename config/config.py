@@ -12,7 +12,9 @@ class Configs:
 
     position_multi_limit = 5
     dr = 0.002
+    signal_wait_decline = False
     signal_reserve_time = 1200
+
 
 
     if system == 'Darwin':
@@ -137,11 +139,22 @@ class Configs:
         # 'secret_key': 'uUH1X2sz5jnMVhL44zxHiphnxhoQ5swPs62gFg4JFLCRayWwFr2MZJm9dJlaM2WK',
         # 'api_key': 'tw8xvSqYAXfqqTHWBKKuvETUcJ6w9BttMG6QIb7q7CceVrl74RdeChxeg05zfDg2',     # hui
         # 'secret_key': '81b9bXaVU7t0QhRQrFB5NfulRYYO7IFiR2D3rLOdrSlbGA2NYwxBvIy09JQPC1dL',
-        # 'api_key': 'R8cR2rb6822fDtpdL7nFX9fNsoC8WdaNfK4K38C8vQrbsHuuE8WmSne0t29gRsN8',     # chao
-        # 'secret_key': 'eHTwScKu61eYJSwzEe6tHcyavKOfROino1jncIuQnE8beMh4ljRXcXJD0Uzuadcj',
-        'api_key': 'b9b98tFEOvo4hdRKkblM33l5hf8WAg99l4SS3aOGNsDKH8yOJ8cXu08JBIfE9BmJ',  # chao
-        'secret_key': '1PYXKw57m7DtjFj4moeRtYlCSHwazR7NSyv75ysPeIxBcTfYcuFUdjc5f3B8Z8rR',
+        # 'api_key': 'b9b98tFEOvo4hdRKkblM33l5hf8WAg99l4SS3aOGNsDKH8yOJ8cXu08JBIfE9BmJ',  # chao
+        # 'secret_key': '1PYXKw57m7DtjFj4moeRtYlCSHwazR7NSyv75ysPeIxBcTfYcuFUdjc5f3B8Z8rR',
     }
 
-
-
+    @classmethod
+    def get_setting(cls, account_id):
+        if account_id == 'bo':
+            cls.crypto_setting.update({
+                'api_key': '8kHJ8xMwb8wZkrTy17IVOym4CDo5qS6JFP8suvpsDaWCqjuBuIAn29HFYKuQM1bE',       # bo
+                'secret_key': 'uUH1X2sz5jnMVhL44zxHiphnxhoQ5swPs62gFg4JFLCRayWwFr2MZJm9dJlaM2WK',
+                'account_id': 'bo'
+            })
+        elif account_id == 'chao':
+            cls.crypto_setting.update({
+                'api_key': 'b9b98tFEOvo4hdRKkblM33l5hf8WAg99l4SS3aOGNsDKH8yOJ8cXu08JBIfE9BmJ',  # chao
+                'secret_key': '1PYXKw57m7DtjFj4moeRtYlCSHwazR7NSyv75ysPeIxBcTfYcuFUdjc5f3B8Z8rR',
+                'account_id': 'chao'
+            })
+        return cls.crypto_setting

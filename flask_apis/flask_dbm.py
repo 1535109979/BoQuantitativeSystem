@@ -53,21 +53,22 @@ if __name__ == '__main__':
     # data = dbm.query_data(table_name='table_updated_time')
     # print(data)
 
-    data = dbm.query_data(table_name='account_value')
-    print(data)
+    # data = dbm.query_data(table_name='account_value')
+    # print(data)
 
 
-    # data = dbm.query_data(table_name='use_instrument_config')
-    # for row in data['data']:
-    #     print(row)
+    data = dbm.query_data(table_name='use_instrument_config')
+    print(len(data['data']))
+    for row in data['data']:
+        print(row)
 
     # data = {
     #     "account_id": "bo",
-    #     "instrument": "MYROUSDT",
+    #     "instrument": "HMSTRUSDT",
     #     "status": "ENABLE",
     #     "cash": 10,
-    #     "windows": 200,
-    #     "interval_period": 100,
+    #     "windows": 400,
+    #     "interval_period": 400,
     #     "roll_mean_period": 300,
     #     "strategy_name": ['stop_loss', 'breakout'],
     #     "open_direction": "long",
@@ -83,3 +84,4 @@ if __name__ == '__main__':
 
 
     # dbm.update_user_instrument_config(data)
+

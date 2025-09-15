@@ -3,10 +3,13 @@ import logging
 import os
 import sqlite3
 import threading
+import time
 
 import pandas as pd
 from dataclasses import dataclass, field, asdict
 from typing import Dict
+from multiprocessing import Process
+
 
 import redis
 from binance.um_futures import UMFutures
@@ -18,15 +21,19 @@ from BoQuantitativeSystem.do.portfolio_process import PortfolioProcess
 from BoQuantitativeSystem.market.ms_grpc_stub import MarketStub
 from BoQuantitativeSystem.strategys.books.use_instrument_config import UseInstrumentConfigBook
 from BoQuantitativeSystem.trade.td_gateway import TDGateway
+from BoQuantitativeSystem.utils.aio_timer import AioTimer
+from BoQuantitativeSystem.utils.dingding import Dingding
 from BoQuantitativeSystem.utils.sys_exception import common_exception
 
 
 class SsEngine:
-    def __init__(self):
+    def __init__(self, account_id):
+        self.account_id = account_id
         self.engine_mode = Configs.engine_mode
         self.account_type = Configs.account_type
         self.use_instrument_config: Dict[str, Dict[str, UseInstrumentConfigBook]] = {}
         self.portfolio_maps = {}
+        self.instrument_quote_time_map = {}
         self.td_gateway = None
         self.ms_stub = None
         self.logger = None
@@ -36,6 +43,16 @@ class SsEngine:
         self.r = redis.Redis(**Configs.redis_setting)
         self.redis_client = self.r.pubsub()
         self.sub_redis_thread = threading.Thread(target=self.subscribe_redis)
+
+        self._check_quote_timer(interval=40)
+
+    def _check_quote_timer(self, interval):
+        def _func():
+            self._check_quote_timer(interval)
+
+            self._check_quote_time()
+
+        AioTimer.new_timer(_delay=interval, _func=_func)
 
     def subscribe_redis(self):
         # 循环监听消息
@@ -56,19 +73,13 @@ class SsEngine:
                 self.ms_stub.subscribe_stream_in_new_thread(instruments=[instrument], on_quote=self.on_quote)
                 self.logger.info(f'<handle_redis_message> add instruments={message}')
 
-
     def start(self):
-        if self.engine_mode == 'backtest':
-            self.load_data()
-            self.run_backtest()
-
-        elif self.engine_mode == 'trade':
             self.kline_client = UMFutures()
             self.ms_stub = MarketStub()
             self.load_portfolio_config()
             self.sub_redis_thread.start()
 
-            self.td_gateway = TDGateway(self)
+            self.td_gateway = TDGateway(self, self.account_id)
 
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=self.on_quote)
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=self.on_quote)
@@ -77,45 +88,30 @@ class SsEngine:
 
     @common_exception(log_flag=True)
     def load_portfolio_config(self):
-        account_ids = [row.account_id for row in
-                       UseInstrumentConfig.select(UseInstrumentConfig.account_id).distinct()]
-
-        for account_id in account_ids:
-            rows = UseInstrumentConfig.select().where(UseInstrumentConfig.account_id == account_id)
-            self.use_instrument_config[account_id] = {str(r.instrument).upper():UseInstrumentConfigBook.create_by_row(r)
-                                                      for r in rows}
-            self.redis_client.subscribe(account_id)
+        print(self.account_id, os.getpid())
+        rows = UseInstrumentConfig.select().where(UseInstrumentConfig.account_id == self.account_id)
+        self.use_instrument_config[self.account_id] = {str(r.instrument).upper():UseInstrumentConfigBook.create_by_row(r)
+                                                  for r in rows}
+        self.redis_client.subscribe(self.account_id)
 
         for account_id, use_instrument_config_books in self.use_instrument_config.items():
             for instrument, instrument_config in use_instrument_config_books.items():
                 self.portfolio_maps[instrument] = PortfolioProcess(self, asdict(instrument_config))
 
-        # quit()
-        #
-        # # 加载策略配置
-        # for instrument_config in Configs.strategy_list:
-        #
-        #     self.portfolio_maps[instrument_config['instrument']] = PortfolioProcess(self, instrument_config)
-        #     self.logger.info(f'<load_portfolio_config> {instrument_config}')
-
-    def load_data(self):
-        if self.account_type == 'CRYPTO':
-            for symbol, _ in self.portfolio_maps.items():
-                df = ReadDB.read_crypto(symbol)
-                self.quote_data.extend([row.to_dict() for index, row in df.iterrows()])
-
-                self.quote_data.sort(key=lambda x: x['start_time'])
-
-    def run_backtest(self):
-        if self.quote_data:
-            for quote in self.quote_data:
-                self.on_quote(quote)
+    def _check_quote_time(self):
+        for instrument, t in self.instrument_quote_time_map.items():
+            now_t = time.time()
+            if now_t - 120 > t:
+                Dingding.send_msg(f'miss quote {instrument}')
 
     def on_quote(self, quote):
         quote = {k: str(v) for k, v in quote.items() if v is not None}
-        # print('quote', quote['symbol'])
+        # print(os.getpid(), self.account_id, self.td_gateway.account_book.balance, 'quote', quote['symbol'])
         # return
         instrument = quote['symbol']
+
+        self.instrument_quote_time_map.update({instrument: time.time()})
+
         p = self.portfolio_maps.get(instrument)
         if p:
             p.on_quote(quote)
@@ -130,13 +126,24 @@ class SsEngine:
         from logging.handlers import TimedRotatingFileHandler
         handler = TimedRotatingFileHandler(log_fp, when="midnight", interval=1, backupCount=7)
         handler.suffix = "%Y-%m-%d.log"  # 设置滚动后文件的后缀
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - PID:%(process)d - %(message)s')
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
 
+def run_engine(acc):
+    SsEngine(acc).start()
+
+
 if __name__ == '__main__':
-    SsEngine().start()
+    account_ids = [row.account_id for row in
+                   UseInstrumentConfig.select(UseInstrumentConfig.account_id).distinct()]
+
+    for account_id in account_ids:
+        p = Process(target=run_engine,args=(account_id,), daemon=True)
+        p.start()
+
+    # SsEngine('bo').start()
 
     while 1:
         pass
