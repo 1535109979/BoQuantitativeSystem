@@ -448,6 +448,7 @@ class BiFutureTd:
         self.order_ref_id += 1
         return f"{str(self.order_ref_id).zfill(max_ref_id_len)}"
 
+    @common_exception(log_flag=True)
     def insert_order(self, instrument: str, offset_flag: OffsetFlag, direction: Direction,
                      order_price_type: OrderPriceType, price: float, volume: float,
                      cancel_delay_seconds: int = 0, **kwargs) -> str:
@@ -466,7 +467,6 @@ class BiFutureTd:
 
         # 生成订单号
         client_order_id: str = self._gen_order_id()
-
         # 放入单例线程池执行以保持数据流顺序
         submit(_executor=self.on_data_thread_pool, _fn=self._new_order,
                _kwargs=dict(instrument=instrument, offset_flag=offset_flag, direction=direction,
@@ -487,7 +487,6 @@ class BiFutureTd:
             symbol=instrument, newClientOrderId=client_order_id, newOrderRespType="RESULT",
             side=side, positionSide=positionSide
         )
-
         if OrderPriceType.MARKET == order_price_type:
             req.update({
                 'type': 'MARKET',

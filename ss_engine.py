@@ -1,3 +1,9 @@
+import importlib
+import os
+from multiprocessing import Process
+
+from BoQuantitativeSystem.database.use_data import UseInstrumentConfig
+
 import json
 import logging
 import os
@@ -14,7 +20,6 @@ from multiprocessing import Process
 import redis
 from binance.um_futures import UMFutures
 
-from BoQuantitativeSystem.backtest.read_db import ReadDB
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.database.use_data import UseInstrumentConfig
 from BoQuantitativeSystem.do.portfolio_process import PortfolioProcess
@@ -24,7 +29,6 @@ from BoQuantitativeSystem.trade.td_gateway import TDGateway
 from BoQuantitativeSystem.utils.aio_timer import AioTimer
 from BoQuantitativeSystem.utils.dingding import Dingding
 from BoQuantitativeSystem.utils.sys_exception import common_exception
-
 
 class SsEngine:
     def __init__(self, account_id):
@@ -134,6 +138,8 @@ class SsEngine:
 def run_engine(acc):
     SsEngine(acc).start()
 
+    while 1:
+        pass
 
 if __name__ == '__main__':
     account_ids = [row.account_id for row in
@@ -142,6 +148,8 @@ if __name__ == '__main__':
     for account_id in account_ids:
         p = Process(target=run_engine,args=(account_id,), daemon=True)
         p.start()
+
+    # Process(target=run_engine, args=('bo',), daemon=True).start()
 
     # SsEngine('bo').start()
 
