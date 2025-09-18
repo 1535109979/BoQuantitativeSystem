@@ -14,9 +14,10 @@ from BoQuantitativeSystem.utils.sys_exception import common_exception
 
 
 class TDGateway:
-    def __init__(self, ss_gateway, account_id):
+    def __init__(self, engine, account_id):
+        self.engine = engine
         self.account_id = account_id
-        self.logger = ss_gateway.logger
+        self.logger = engine.logger
         self.client = None
         self.account_book = None
         self._save_account_data_timer(interval=3600)
@@ -93,8 +94,16 @@ class TDGateway:
 
     @common_exception(log_flag=True)
     def save_account_value(self):
+        bnb_quote = self.engine.instrument_quote_time_map.get('BNBUSDT')
+        if bnb_quote:
+            bnb_price = float(bnb_quote['last_price'])
+        else:
+            bnb_price = 990
+
         save_data = AccountValue(
+            account_id=self.account_id,
             balance=self.account_book.balance,
+            bnb=round(self.account_book.bnb * bnb_price, 2),
             position_sum_cost=self.account_book.position_sum_cost,
             position_multi=self.account_book.position_multi,
             update_time=datetime.now(),
@@ -117,6 +126,7 @@ class TDGateway:
     def on_trade(self, rtn_trade):
         self.logger.info(f'<on_trade> save trade_data={rtn_trade}')
         trade_data = TradeInfo(
+            account_id=self.account_id,
             instrument = rtn_trade.instrument,
             order_id = rtn_trade.order_id,
             client_id = rtn_trade.client_id,

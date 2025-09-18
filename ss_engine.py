@@ -88,6 +88,7 @@ class SsEngine:
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=self.on_quote)
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=self.on_quote)
             self.ms_stub.subscribe_stream_in_new_thread(instruments=self.portfolio_maps.keys(), on_quote=self.on_quote)
+            self.ms_stub.subscribe_stream_in_new_thread(instruments=['BNBUSDT'], on_quote=self.on_quote)
             self.logger.info(f'subscribe instruments={self.portfolio_maps.keys()}')
 
     @common_exception(log_flag=True)
@@ -103,18 +104,23 @@ class SsEngine:
                 self.portfolio_maps[instrument] = PortfolioProcess(self, asdict(instrument_config))
 
     def _check_quote_time(self):
-        for instrument, t in self.instrument_quote_time_map.items():
+        for instrument, quote in self.instrument_quote_time_map.items():
             now_t = time.time()
-            if now_t - 120 > t:
+            t = float(quote.get('ms_gateway_timestamp'))
+            if now_t - t > 60:
                 Dingding.send_msg(f'miss quote {instrument}')
 
     def on_quote(self, quote):
         quote = {k: str(v) for k, v in quote.items() if v is not None}
-        # print(os.getpid(), self.account_id, self.td_gateway.account_book.balance, 'quote', quote['symbol'])
-        # return
+        # print(time.time())
+        print(os.getpid(), self.account_id, self.td_gateway.account_book.balance, 'quote', quote['symbol'], quote)
+        return
         instrument = quote['symbol']
 
-        self.instrument_quote_time_map.update({instrument: time.time()})
+        if instrument == 'BNBUSDT':
+            return
+
+        self.instrument_quote_time_map.update({instrument: quote})
 
         p = self.portfolio_maps.get(instrument)
         if p:
@@ -145,13 +151,13 @@ if __name__ == '__main__':
     account_ids = [row.account_id for row in
                    UseInstrumentConfig.select(UseInstrumentConfig.account_id).distinct()]
 
-    for account_id in account_ids:
-        p = Process(target=run_engine,args=(account_id,), daemon=True)
-        p.start()
+    # for account_id in account_ids:
+    #     p = Process(target=run_engine,args=(account_id,), daemon=True)
+    #     p.start()
 
     # Process(target=run_engine, args=('bo',), daemon=True).start()
 
-    # SsEngine('bo').start()
+    SsEngine('bo').start()
 
     while 1:
         pass

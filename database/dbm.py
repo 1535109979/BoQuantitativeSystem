@@ -67,6 +67,7 @@ class AccountValue(Model):
     id = AutoField(primary_key=True)
     account_id = CharField()
     balance = FloatField()
+    bnb = FloatField()
     position_sum_cost = FloatField()
     position_multi = FloatField()
     update_time = DateTimeField()
