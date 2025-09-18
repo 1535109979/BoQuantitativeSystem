@@ -113,8 +113,8 @@ class SsEngine:
     def on_quote(self, quote):
         quote = {k: str(v) for k, v in quote.items() if v is not None}
         # print(time.time())
-        print(os.getpid(), self.account_id, self.td_gateway.account_book.balance, 'quote', quote['symbol'], quote)
-        return
+        # print(os.getpid(), self.account_id, self.td_gateway.account_book.balance, 'quote', quote['symbol'], quote)
+        # return
         instrument = quote['symbol']
 
         if instrument == 'BNBUSDT':
@@ -151,13 +151,13 @@ if __name__ == '__main__':
     account_ids = [row.account_id for row in
                    UseInstrumentConfig.select(UseInstrumentConfig.account_id).distinct()]
 
-    # for account_id in account_ids:
-    #     p = Process(target=run_engine,args=(account_id,), daemon=True)
-    #     p.start()
+    for account_id in account_ids:
+        p = Process(target=run_engine,args=(account_id,), daemon=True)
+        p.start()
 
     # Process(target=run_engine, args=('bo',), daemon=True).start()
 
-    SsEngine('bo').start()
+    # SsEngine('bo').start()
 
     while 1:
         pass
