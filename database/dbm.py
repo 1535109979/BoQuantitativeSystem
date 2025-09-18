@@ -92,13 +92,13 @@ if __name__ == '__main__':
     # Subtest.create_table()
     # TableLatestTime.create_table()
     # SqliteDatabaseManage()
-    AccountValue.create_table()
-    OrderInfo.create_table()
-    TradeInfo.create_table()
+    # AccountValue.create_table()
+    # OrderInfo.create_table()
+    # TradeInfo.create_table()
 
     latest = TradeInfo.select().where(TradeInfo.account_id == 'bo').order_by(
         TradeInfo.update_time.desc()).first()
-
+    print(latest)
 
     # account_values = AccountValue.select()
     # for account in account_values:

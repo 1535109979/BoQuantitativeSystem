@@ -17,7 +17,10 @@ def query_last_account_value():
 
     latest = AccountValue.select().where(AccountValue.account_id == data['account_id']).order_by(
         AccountValue.update_time.desc()).first()
-    return jsonify({'errcode': 0, 'errmsg': '添加成功', 'data': {
+    if latest is None:
+        jsonify({'errcode': 1, 'errmsg': '没有数据'}), 400
+    else:
+        return jsonify({'errcode': 0, 'errmsg': '查询成功', 'data': {
         'id': latest.id,
         'account_id': latest.account_id,
         'balance': latest.balance,
