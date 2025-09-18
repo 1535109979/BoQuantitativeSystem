@@ -11,6 +11,20 @@ app = Flask(__name__)
 def index():
     return 'hello'
 
+@app.route('/query_last_account_value', methods=['POST'])
+def query_last_account_value():
+    data = request.json
+
+    latest = AccountValue.select().where(AccountValue.account_id == data['account_id']).order_by(
+        AccountValue.update_time.desc()).first()
+    return jsonify({'errcode': 0, 'errmsg': '添加成功', 'data': {
+        'id': latest.id,
+        'account_id': latest.account_id,
+        'balance': latest.balance,
+        'bnb': latest.bnb,
+        'position_multi': latest.position_multi,
+    }})
+
 @app.route('/query_table_data', methods=['GET'])
 def query_table_data():
     table_name_map = {

@@ -20,7 +20,7 @@ class TDGateway:
         self.logger = engine.logger
         self.client = None
         self.account_book = None
-        self._save_account_data_timer(interval=3600)
+        self._save_account_data_timer(interval=1800)
         self.connect()
 
     def connect(self):
@@ -124,6 +124,12 @@ class TDGateway:
 
     @common_exception(log_flag=True)
     def on_trade(self, rtn_trade):
+        bnb_quote = self.engine.instrument_quote_time_map.get('BNBUSDT')
+        if bnb_quote:
+            bnb_price = float(bnb_quote['last_price'])
+        else:
+            bnb_price = 990
+
         self.logger.info(f'<on_trade> save trade_data={rtn_trade}')
         trade_data = TradeInfo(
             account_id=self.account_id,
@@ -137,7 +143,7 @@ class TDGateway:
             trading_day = rtn_trade.trading_day,
             trade_time = rtn_trade.trade_time,
             profit = rtn_trade.profit,
-            commission = rtn_trade.commission,
+            commission = round(rtn_trade.commission * bnb_price, 2),
             commission_asset = rtn_trade.commission_asset,
             update_time = datetime.now(),
         )

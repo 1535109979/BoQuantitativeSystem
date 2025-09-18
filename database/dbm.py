@@ -96,6 +96,10 @@ if __name__ == '__main__':
     OrderInfo.create_table()
     TradeInfo.create_table()
 
+    latest = TradeInfo.select().where(TradeInfo.account_id == 'bo').order_by(
+        TradeInfo.update_time.desc()).first()
+
+
     # account_values = AccountValue.select()
     # for account in account_values:
     #     print(account.balance, account.update_time)

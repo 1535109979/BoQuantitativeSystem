@@ -53,8 +53,11 @@ if __name__ == '__main__':
     # data = dbm.query_data(table_name='table_updated_time')
     # print(data)
 
-    data = dbm.query_data(table_name='account_value')
+    data = dbm.query_data(table_name='trade_info')
+    # data = dbm.query_data(table_name='account_value')
     print(data)
+
+
 
 
     # data = dbm.query_data(table_name='use_instrument_config')
