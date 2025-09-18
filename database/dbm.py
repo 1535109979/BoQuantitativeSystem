@@ -21,6 +21,7 @@ class SqliteDatabaseManage:
 
 class TradeInfo(Model):
     id = AutoField(primary_key=True)
+    account_id = CharField()
     instrument = CharField()
     order_id = CharField()
     client_id = CharField()
@@ -42,6 +43,7 @@ class TradeInfo(Model):
 
 class OrderInfo(Model):
     id = AutoField(primary_key=True)
+    account_id = CharField()
     instrument = CharField()
     order_id = CharField()
     client_id = CharField()
@@ -63,6 +65,7 @@ class OrderInfo(Model):
 
 class AccountValue(Model):
     id = AutoField(primary_key=True)
+    account_id = CharField()
     balance = FloatField()
     position_sum_cost = FloatField()
     position_multi = FloatField()
