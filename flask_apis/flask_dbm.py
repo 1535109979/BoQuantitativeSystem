@@ -38,6 +38,7 @@ class FlaskDBM:
             response = requests.get(self.url+ 'query_user_instrument_config')
             response.raise_for_status()  # 检查请求是否成功
             print("Response:", response.json())  # 打印响应内容
+            return response.json()
         except requests.exceptions.RequestException as e:
             print("An error occurred:", e)
 
@@ -45,14 +46,14 @@ class FlaskDBM:
         try:
             response = requests.get(self.url+ 'query_last_account_value', params={'account_id': account_id})
             response.raise_for_status()  # 检查请求是否成功
-            print("Response:", response.json())  # 打印响应内容
+            return response.json()
         except requests.exceptions.RequestException as e:
             print("An error occurred:", e)
 
 if __name__ == '__main__':
 
-    # url = 'http://127.0.0.1:5050/'
-    url = 'http://43.155.76.153:5050/'
+    url = 'http://127.0.0.1:5050/'
+    # url = 'http://43.155.76.153:5050/'
 
     dbm = FlaskDBM(url)
 
