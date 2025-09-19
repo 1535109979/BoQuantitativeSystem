@@ -41,6 +41,14 @@ class FlaskDBM:
         except requests.exceptions.RequestException as e:
             print("An error occurred:", e)
 
+    def query_last_account_value(self, account_id):
+        try:
+            response = requests.get(self.url+ 'query_last_account_value', params={'account_id': account_id})
+            response.raise_for_status()  # 检查请求是否成功
+            print("Response:", response.json())  # 打印响应内容
+        except requests.exceptions.RequestException as e:
+            print("An error occurred:", e)
+
 if __name__ == '__main__':
 
     # url = 'http://127.0.0.1:5050/'
@@ -53,11 +61,12 @@ if __name__ == '__main__':
     # data = dbm.query_data(table_name='table_updated_time')
     # print(data)
 
-    data = dbm.query_data(table_name='trade_info')
+    # data = dbm.query_data(table_name='trade_info')
     # data = dbm.query_data(table_name='account_value')
+    # print(data)
+
+    data = dbm.query_last_account_value(account_id='chao')
     print(data)
-
-
 
 
     # data = dbm.query_data(table_name='use_instrument_config')

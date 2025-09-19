@@ -107,7 +107,7 @@ class SsEngine:
         for instrument, quote in self.instrument_quote_time_map.items():
             now_t = time.time()
             t = float(quote.get('ms_gateway_timestamp'))
-            if now_t - t > 60:
+            if now_t - t > 180:
                 Dingding.send_msg(f'miss quote {instrument}')
 
     def on_quote(self, quote):
