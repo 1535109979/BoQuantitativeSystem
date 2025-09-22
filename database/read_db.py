@@ -19,11 +19,12 @@ data = dbm.query_data(table_name='trade_info')
 df_trade = pandas.DataFrame(data['data'])
 df_trade['update_time'] = pd.to_datetime(df_trade['update_time'])
 df_trade = df_trade[df_trade['update_time'] > '2025-08-21 13:15:00']
+df_trade = df_trade[df_trade['account_id'] == 'chao']
 
 def process_symbol(df_symbol):
     symbol = df_symbol.iloc[0]['instrument']
     df_symbol = df_symbol.sort_values(by=['trade_time'])
-    # print(df_symbol)
+    print(df_symbol)
     df_close = df_symbol[df_symbol['offset'] == 'CLOSE'].reset_index(drop=True)
     df_close['sum_profit'] = df_close['profit'].cumsum()
     plt.plot(df_close['sum_profit'])
@@ -41,6 +42,7 @@ data = dbm.query_data(table_name='account_value')
 df_account = pandas.DataFrame(data['data'])
 df_account['update_time'] = pd.to_datetime(df_account['update_time'])
 df_account = df_account[df_account['update_time'] > '2025-08-21 13:15:00']
+df_account = df_account[df_account['account_id'] == 'chao']
 # print(df_account)
 
 

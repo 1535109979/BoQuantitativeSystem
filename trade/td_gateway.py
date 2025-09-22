@@ -20,7 +20,7 @@ class TDGateway:
         self.logger = engine.logger
         self.client = None
         self.account_book = None
-        self._save_account_data_timer(interval=1800)
+        self._save_account_data_timer(interval=180)
         self.connect()
 
     def connect(self):
