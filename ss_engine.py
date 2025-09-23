@@ -131,7 +131,7 @@ class SsEngine:
     def create_logger(self):
         self.logger = logging.getLogger('bi_future_ss')
         self.logger.setLevel(logging.DEBUG)
-        log_fp = Configs.root_fp + 'logs/bi_future_ss.log'
+        log_fp = Configs.root_fp + f'logs/{self.account_id}_bi_future_ss.log'
 
         from logging.handlers import TimedRotatingFileHandler
         handler = TimedRotatingFileHandler(log_fp, when="midnight", interval=1, backupCount=7)
