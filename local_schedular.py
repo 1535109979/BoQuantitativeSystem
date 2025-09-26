@@ -42,6 +42,10 @@ class EngineSchedular:
                 self.logger.info(f'updated rows:{row.__data__}')
                 self.redis_pub_client.publish(row.account_id, json.dumps(row.__data__, default=str))
                 self.logger.info(f'publish to {row.account_id} message={row.__data__}')
+                # table_time_data.update_time = datetime.now()
+                # table_time_data.save()
+
+            if rows:
                 table_time_data.update_time = datetime.now()
                 table_time_data.save()
 
