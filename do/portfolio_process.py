@@ -27,11 +27,11 @@ class PortfolioProcess:
         self.load_strategy()
 
     def update_param(self, params):
+        self.logger.info(f'<PortfolioProcess update_param> params={params}')
         self.params = params
         for strategy in self.strategy_list:
             strategy.update_param()
         self.get_klines()
-        self.logger.info(f'<PortfolioProcess update_param> params={params}')
         self.td_gateway.send_msg(f'PortfolioProcess update_param: params={params}')
 
     @common_exception(log_flag=True)
