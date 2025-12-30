@@ -62,6 +62,8 @@ class ChangeRateDiffStrategy():
                 self.singal_dir = Direction.LONG
             elif change_diff < -self.open_rate:
                 self.singal_dir = Direction.SHORT
+        else:
+            self.logger.info(f'base_price:{self.base_price} change_rate:{self.change_rate}')
 
     @common_exception(log_flag=True)
     def cal_singal(self, quote):
