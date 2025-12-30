@@ -1,4 +1,5 @@
 import json
+import time
 from dataclasses import asdict
 from datetime import date
 
@@ -20,6 +21,7 @@ class ChangeRateDiffStrategy():
         self.base_price = {}
         self.change_rate = {}
         self.singal_dir = None
+        self.trading_flag = None
         self.max_profit_rate = 0
         self.load_data()
 
@@ -65,6 +67,11 @@ class ChangeRateDiffStrategy():
     def cal_singal(self, quote):
         last_price = float(quote['last_price'])
 
+        if self.trading_flag:
+            if time.time() - self.trading_flag < 30:
+                self.logger.info(f'filter by trading flag')
+                return
+
         s1_position_long = self.strategy_process.td_gateway.account_book.get_instrument_position(
             f'{self.symbol1}.{self.strategy_process.td_gateway.exchange_type}', Direction.LONG)
         s1_position_short= self.strategy_process.td_gateway.account_book.get_instrument_position(
@@ -94,12 +101,14 @@ class ChangeRateDiffStrategy():
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
                         Direction.SHORT, OrderPriceType.LIMIT, str(last_price),s2_position_short.volume)
                     self.logger.info('close symbol1 long symbol2 short')
+                    self.trading_flag = time.time()
                 if s2_position_long.volume:
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                          Direction.SHORT, OrderPriceType.LIMIT, str(last_price),s1_position_short.volume)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
                          Direction.LONG, OrderPriceType.LIMIT,str(last_price), s2_position_long.volume)
                     self.logger.info('close symbol2 long symbol1 short')
+                    self.trading_flag = time.time()
 
         else:
             if self.singal_dir:
@@ -109,6 +118,7 @@ class ChangeRateDiffStrategy():
                                 self.singal_dir.get_opposite_direction(), OrderPriceType.LIMIT, str(last_price),
                                                               cash=self.params['cash'])
                 self.logger.info(f'open {self.singal_dir}')
+                self.trading_flag = time.time()
 
 
 
