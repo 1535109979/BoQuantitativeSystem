@@ -13,7 +13,7 @@ class ChangeRateDiffStrategy():
         self.logger = self.strategy_process.logger
 
         self.params = params
-        param_json = json.loads(params['param_json'])
+        param_json = eval(params['param_json'])
         self.open_rate = param_json['open_rate']
         self.close_rate = param_json['close_rate']
         self.symbol1, self.symbol2 = param_json['symbol_pair'].split('_')

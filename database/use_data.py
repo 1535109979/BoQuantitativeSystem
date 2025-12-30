@@ -65,20 +65,20 @@ if __name__ == '__main__':
 
     save_data = UseInstrumentConfig(
         account_id='chao',
-        instrument='BTCUSDT_ETHUSDT',
+        instrument='SOLUSDT_ETHUSDT',
         status='ENABLE',
-        cash=10,
+        cash=100,
         windows=100,
         roll_mean_period=400,
         interval_period=200,
-        strategy_name=['stop_loss', 'breakout'],
+        strategy_name=['rate_diff'],
         open_direction='LONG',
         stop_loss_rate=10,
         stop_profit_rate=1.3,
         order_price_delta=10,
         order_price_type='LIMIT',
         leverage=1,
-        param_json={'open_rate': 4, "stop_rate": 3},
+        param_json={"open_rate": 3, "close_rate": 3, "symbol_pair": "SOLUSDT_ETHUSDT"},
         update_time=datetime.now(),
     )
     save_data.save()
