@@ -44,9 +44,9 @@ class SsEngine:
         self.create_logger()
 
         self.quote_data = []
-        # self.r = redis.Redis(**Configs.redis_setting)
-        # self.redis_client = self.r.pubsub()
-        # self.sub_redis_thread = threading.Thread(target=self.subscribe_redis)
+        self.r = redis.Redis(**Configs.redis_setting)
+        self.redis_client = self.r.pubsub()
+        self.sub_redis_thread = threading.Thread(target=self.subscribe_redis)
 
         self._check_quote_timer(interval=40)
 
@@ -82,9 +82,9 @@ class SsEngine:
             self.ms_stub = MarketStub()
             self.load_portfolio_config()
 
-            # self.sub_redis_thread.start()
+            self.sub_redis_thread.start()
 
-            # self.td_gateway = TDGateway(self, self.account_id)
+            self.td_gateway = TDGateway(self, self.account_id)
 
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=self.on_quote)
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=self.on_quote)
@@ -98,7 +98,7 @@ class SsEngine:
         rows = UseInstrumentConfig.select().where(UseInstrumentConfig.account_id == self.account_id)
         self.use_instrument_config[self.account_id] = {str(r.instrument).upper():UseInstrumentConfigBook.create_by_row(r)
                                                   for r in rows}
-        # self.redis_client.subscribe(self.account_id)
+        self.redis_client.subscribe(self.account_id)
 
         for account_id, use_instrument_config_books in self.use_instrument_config.items():
             for instrument, instrument_config in use_instrument_config_books.items():
