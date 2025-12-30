@@ -115,6 +115,7 @@ class SsEngine:
                         continue
                     else:
                         self.portfolio_maps[instrument] = PortfolioProcess(self, instrument_config)
+        print(self.portfolio_maps)
 
     def _check_quote_time(self):
         for instrument, quote in self.instrument_quote_time_map.items():
