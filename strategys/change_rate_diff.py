@@ -25,6 +25,10 @@ class ChangeRateDiffStrategy():
         self.max_profit_rate = 0
         self.load_data()
 
+    def update_param(self):
+        self.load_data()
+        self.logger.info(f'ChangeRateDiffStrategy: params={self.params}')
+
     def load_data(self):
         self.strategy_process.get_klines(60*24, self.symbol1)
         self.strategy_process.get_klines(60*24, self.symbol2)

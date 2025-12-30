@@ -38,7 +38,7 @@ class PortfolioProcess:
         # print('on_quote', self.params)
         # print(self.td_gateway)
         # return
-
+        self.logger.info(f"{quote['symbol']} {self.params}")
         if self.params['status'] == 'ENABLE':
             for strategy in self.strategy_list:
                 strategy.cal_indicator(quote)
