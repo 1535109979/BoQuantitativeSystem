@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import time
@@ -8,6 +9,7 @@ import pandas
 from BoQuantitativeSystem.config.config import Configs
 from BoQuantitativeSystem.strategys.bid import BidStrategy
 from BoQuantitativeSystem.strategys.breakout import BreakoutStrategy
+from BoQuantitativeSystem.strategys.change_rate_diff import ChangeRateDiffStrategy
 from BoQuantitativeSystem.strategys.stop_loss import StopLoss
 from BoQuantitativeSystem.utils.sys_exception import common_exception
 
@@ -20,6 +22,7 @@ class PortfolioProcess:
         self.create_logger()
         self.strategy_list = []
         self.latest_price_list = []
+        self.df_data = {}
 
         self.load_strategy()
 
@@ -45,7 +48,7 @@ class PortfolioProcess:
 
     def load_strategy(self):
         if 'breakout' in self.params['strategy_name']:
-            self.get_klines()
+            self.get_klines(2100, self.params['instrument'])
             b = BreakoutStrategy(self, self.params)
             self.strategy_list.append(b)
             self.logger.info(f'<load_strategy>: breakout params={self.params}')
@@ -60,19 +63,29 @@ class PortfolioProcess:
             self.strategy_list.append(b)
             self.logger.info(f'<load_strategy>: stop_loss params={self.params}')
 
-    def get_klines(self, min_save_window=2100):
+        if 'rate_diff' in self.params['strategy_name']:
+            b = ChangeRateDiffStrategy(self, self.params)
+            self.strategy_list.append(b)
+            self.logger.info(f'<load_strategy>: rate_diff params={self.params}')
+
+    def get_klines(self, min_save_window=2100, symbol='BTCUSDT'):
         st_time = int(time.time()) - min_save_window * 60
         end_time = int(time.time())
-        self.download_data(st_time, end_time, self.params['instrument'], "1m")
+        self.download_data(st_time, end_time, symbol, "1m")
 
     @common_exception(log_flag=True)
     def download_data(self, start_time, end_time, symbol='BTCUSDT', interval='1m'):
         st_time = start_time
-
+        df_list = []
         while st_time < end_time:
             df = self.get_future_data(st_time, symbol, interval)
-            self.latest_price_list += df['close'].astype(float).to_list()
+            df['close'] = df['close'].astype(float)
+            df['symbol'] = symbol
+            df_list.append(df)
+            self.latest_price_list += df['close'].to_list()
             st_time = st_time + 1000 * 60
+
+        self.df_data.update({symbol:pandas.concat(df_list, ignore_index=True)})
         self.logger.info(f'<get_future_data>: latest_time={df.loc[len(df) - 1].close_time}')
 
     def get_future_data(self, st_time, symbol='BTCUSDT', interval='1m'):

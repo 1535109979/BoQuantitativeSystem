@@ -72,17 +72,17 @@ if __name__ == '__main__':
 
     data = dbm.query_data(table_name='use_instrument_config')
     print(len(data['data']))
-    # for row in data['data']:
-    #     print(row)
+    for row in data['data']:
+        print(row)
 
     # data = {
     #     "account_id": "chao",
-    #     "instrument": "MANAUSDT",
-    #     "status": "UNABLE",
+    #     "instrument": "IDOUSDT",
+    #     "status": "ENABLE",
     #     "cash": 10,
-    #     "windows": 900,
-    #     "interval_period": 100,
-    #     "roll_mean_period": 300,
+    #     "windows": 200,
+    #     "interval_period": 400,
+    #     "roll_mean_period": 100,
     #     "strategy_name": ['stop_loss', 'breakout'],
     #     "open_direction": "long",
     #     "stop_loss_rate": 0.1,

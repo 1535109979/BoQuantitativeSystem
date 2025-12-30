@@ -101,7 +101,17 @@ class SsEngine:
 
         for account_id, use_instrument_config_books in self.use_instrument_config.items():
             for instrument, instrument_config in use_instrument_config_books.items():
-                self.portfolio_maps[instrument] = PortfolioProcess(self, asdict(instrument_config))
+                instrument_config = asdict(instrument_config)
+                if instrument_config['status'] == 'ENABLE':
+                    if 'rate_diff' in instrument_config['strategy_name']:
+                        s1, s2 = json.loads(instrument_config['param_json'])['symbol_pair'].split('_')
+                        self.ms_stub.subscribe_stream_in_new_thread(instruments=[s1, s2], on_quote=self.on_quote)
+                        p = PortfolioProcess(self, instrument_config)
+                        self.portfolio_maps[s1] = p
+                        self.portfolio_maps[s2] = p
+                        continue
+
+                    self.portfolio_maps[instrument] = PortfolioProcess(self, instrument_config)
 
     def _check_quote_time(self):
         for instrument, quote in self.instrument_quote_time_map.items():
@@ -131,6 +141,7 @@ class SsEngine:
     def create_logger(self):
         self.logger = logging.getLogger('bi_future_ss')
         self.logger.setLevel(logging.DEBUG)
+        os.makedirs(Configs.root_fp + f'logs', exist_ok=True)
         log_fp = Configs.root_fp + f'logs/{self.account_id}_bi_future_ss.log'
 
         from logging.handlers import TimedRotatingFileHandler
@@ -151,13 +162,13 @@ if __name__ == '__main__':
     account_ids = [row.account_id for row in
                    UseInstrumentConfig.select(UseInstrumentConfig.account_id).distinct()]
 
-    for account_id in account_ids:
-        p = Process(target=run_engine,args=(account_id,), daemon=True)
-        p.start()
+    # for account_id in account_ids:
+    #     p = Process(target=run_engine,args=(account_id,), daemon=True)
+    #     p.start()
 
     # Process(target=run_engine, args=('bo',), daemon=True).start()
 
-    # SsEngine('bo').start()
+    SsEngine('chao').start()
 
     while 1:
         pass

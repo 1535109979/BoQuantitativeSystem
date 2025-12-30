@@ -44,7 +44,7 @@ class TDGateway:
 
     @common_exception(log_flag=True)
     def insert_order(self, instrument: str, offset_flag: OffsetFlag, direction: Direction,
-                     order_price_type: OrderPriceType, price: float, volume: float,
+                     order_price_type: OrderPriceType, price: float, volume: float = 0,
                      cancel_delay_seconds: int = 0, **kwargs) -> str:
         """ 向交易所报单
         做多开仓=OPEN:LONG    做空开仓=OPEN:SHORT

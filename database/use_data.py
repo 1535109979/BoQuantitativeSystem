@@ -53,9 +53,9 @@ if __name__ == '__main__':
     # TableUpdatedTime.create_table()
 
 
-    use_instrument_configs = UseInstrumentConfig.select()
-    for use_instrument_config in use_instrument_configs:
-        print(use_instrument_config.__data__)
+    # use_instrument_configs = UseInstrumentConfig.select()
+    # for use_instrument_config in use_instrument_configs:
+    #     print(use_instrument_config.__data__)
 
     # update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument=='BAKEUSDT')
     # update_date.update_time = datetime.now()
@@ -63,22 +63,22 @@ if __name__ == '__main__':
     # update_date.save()
 
 
-    # save_data = UseInstrumentConfig(
-    #     account_id='chao',
-    #     instrument='1000CATUSDT',
-    #     status='ENABLE',
-    #     cash=10,
-    #     windows=100,
-    #     roll_mean_period=400,
-    #     interval_period=200,
-    #     strategy_name=['stop_loss', 'breakout'],
-    #     open_direction='LONG',
-    #     stop_loss_rate=10,
-    #     stop_profit_rate=1.3,
-    #     order_price_delta=10,
-    #     order_price_type='LIMIT',
-    #     leverage=1,
-    #     param_json='',
-    #     update_time=datetime.now(),
-    # )
-    # save_data.save()
+    save_data = UseInstrumentConfig(
+        account_id='chao',
+        instrument='BTCUSDT_ETHUSDT',
+        status='ENABLE',
+        cash=10,
+        windows=100,
+        roll_mean_period=400,
+        interval_period=200,
+        strategy_name=['stop_loss', 'breakout'],
+        open_direction='LONG',
+        stop_loss_rate=10,
+        stop_profit_rate=1.3,
+        order_price_delta=10,
+        order_price_type='LIMIT',
+        leverage=1,
+        param_json={'open_rate': 4, "stop_rate": 3},
+        update_time=datetime.now(),
+    )
+    save_data.save()
