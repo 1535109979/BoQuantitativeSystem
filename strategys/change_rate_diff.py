@@ -74,7 +74,8 @@ class ChangeRateDiffStrategy():
         s2_position_short = self.strategy_process.td_gateway.account_book.get_instrument_position(
             f'{self.symbol2}.{self.strategy_process.td_gateway.exchange_type}', Direction.SHORT)
 
-        print(s1_position_long.pnl, s1_position_short.pnl, s2_position_long.pnl, s2_position_short.pnl)
+        self.logger.info(f's1 long pnl:{s1_position_long.pnl} ,s1 short pnl:{s1_position_short.pnl}, '
+                         f's2 long pnl:{s2_position_long.pnl} ,s2 short pnl:{s2_position_short.pnl}')
 
         if s1_position_long.volume or s2_position_long.volume:
             cash = self.params['cash']
