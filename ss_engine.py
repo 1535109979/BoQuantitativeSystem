@@ -130,9 +130,6 @@ class SsEngine:
         # return
         instrument = quote['symbol']
 
-        if instrument == 'BNBUSDT':
-            return
-
         self.instrument_quote_time_map.update({instrument: quote})
 
         p = self.portfolio_maps.get(instrument)
