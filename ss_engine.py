@@ -64,14 +64,17 @@ class SsEngine:
             # 调用消息处理函数处理接收到的消息
             self.handle_redis_message(message)
 
+    @common_exception(log_flag=True)
     def handle_redis_message(self, message):
         self.logger.info(f'<handle_redis_message> message={message}')
         if message['type'] == 'message':
+
             message = json.loads(message['data'])
             instrument = message['instrument']
             p = self.portfolio_maps.get(message['instrument'])
             if p:
                 p.update_param(message)
+                self.logger.info(f'update_param {instrument}:{message}')
             else:
                 self.portfolio_maps[message['instrument']] = PortfolioProcess(self, message)
                 self.ms_stub.subscribe_stream_in_new_thread(instruments=[instrument], on_quote=self.on_quote)
@@ -89,7 +92,7 @@ class SsEngine:
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['rb2509'], on_quote=self.on_quote)
             # # MarketStub().subscribe_stream_in_new_thread(instruments=['ONDOUSDT'], on_quote=self.on_quote)
             self.ms_stub.subscribe_stream_in_new_thread(instruments=self.portfolio_maps.keys(), on_quote=self.on_quote)
-            self.ms_stub.subscribe_stream_in_new_thread(instruments=['BNBUSDT'], on_quote=self.on_quote)
+            # self.ms_stub.subscribe_stream_in_new_thread(instruments=['BNBUSDT'], on_quote=self.on_quote)
             self.logger.info(f'subscribe instruments={self.portfolio_maps.keys()}')
 
     @common_exception(log_flag=True)
@@ -112,6 +115,7 @@ class SsEngine:
                         p = PortfolioProcess(self, instrument_config)
                         self.portfolio_maps[s1] = p
                         self.portfolio_maps[s2] = p
+                        self.portfolio_maps[instrument] = p
                         continue
                     else:
                         self.portfolio_maps[instrument] = PortfolioProcess(self, instrument_config)
@@ -142,6 +146,9 @@ class SsEngine:
     def create_logger(self):
         self.logger = logging.getLogger('bi_future_ss')
         self.logger.setLevel(logging.DEBUG)
+        self.logger.propagate = False
+        self.logger.handlers = []
+
         os.makedirs(Configs.root_fp + f'logs', exist_ok=True)
         log_fp = Configs.root_fp + f'logs/{self.account_id}_bi_future_ss.log'
 

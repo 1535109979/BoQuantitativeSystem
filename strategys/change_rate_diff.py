@@ -77,7 +77,7 @@ class ChangeRateDiffStrategy():
             if time.time() - self.trading_flag < 30:
                 self.logger.info(f'filter by trading flag')
                 return
-
+        return
         s1_position_long = self.strategy_process.td_gateway.account_book.get_instrument_position(
             f'{self.symbol1}.{self.strategy_process.td_gateway.exchange_type}', Direction.LONG)
         s1_position_short= self.strategy_process.td_gateway.account_book.get_instrument_position(

@@ -40,7 +40,6 @@ class PortfolioProcess:
         # print('on_quote', self.params)
         # print(self.td_gateway)
         # return
-        self.logger.info(f"{quote['symbol']} {self.params}")
         if self.params['status'] == 'ENABLE':
             for strategy in self.strategy_list:
                 strategy.cal_indicator(quote)
@@ -108,6 +107,9 @@ class PortfolioProcess:
 
         self.logger = logging.getLogger(f'strategy_{self.params["instrument"]}')
         self.logger.setLevel(logging.DEBUG)
+        self.logger.propagate = False
+        self.logger.handlers = []
+
         log_fp = Configs.root_fp + f'logs/{self.engine.account_id}/{self.params["instrument"]}.log'
 
         from logging.handlers import TimedRotatingFileHandler
