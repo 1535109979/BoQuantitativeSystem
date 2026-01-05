@@ -16,17 +16,22 @@ class ChangeRateDiffStrategy():
         param_json = eval(params['param_json'])
         self.open_rate = param_json['open_rate']
         self.close_rate = param_json['close_rate']
+        self.stop_profit_decline_rate = param_json['stop_profit_decline_rate']
+
         self.symbol1, self.symbol2 = param_json['symbol_pair'].split('_')
         self.today = date.today()
         self.base_price = {}
         self.change_rate = {}
         self.singal_dir = None
         self.trading_flag = None
+        self.df_s1_today = None
+        self.df_s2_today = None
         self.max_profit_rate = 0
         self.load_data()
 
     def update_param(self):
         self.load_data()
+        self.params = self.strategy_process.params
         self.logger.info(f'ChangeRateDiffStrategy: params={self.params}')
 
     def load_data(self):
@@ -36,32 +41,38 @@ class ChangeRateDiffStrategy():
         today = date.today()
         df_s1 = self.strategy_process.df_data.get(self.symbol1)
         df_s2 = self.strategy_process.df_data.get(self.symbol2)
-        self.base_price[self.symbol1] = [float(df_s1.loc[df_s1['start_time'].dt.date == today, 'open'].iloc[0]), 1]
-        self.base_price[self.symbol2] = [float(df_s2.loc[df_s2['start_time'].dt.date == today, 'open'].iloc[0]), 1]
+        self.df_s1_today = df_s1.loc[df_s1['start_time'].dt.date == today]
+        self.df_s2_today = df_s2.loc[df_s1['start_time'].dt.date == today]
+
+        if self.df_s1_today.empty or self.df_s2_today.empty:
+            return
+        self.base_price[self.symbol1] = float(self.df_s1_today['open'].iloc[0])
+        self.base_price[self.symbol2] = float(self.df_s2_today['open'].iloc[0])
 
     @common_exception(log_flag=True)
     def cal_indicator(self, quote):
         last_price = float(quote['last_price'])
         instrument = quote['symbol']
+        self.singal_dir = None
 
         today = date.today()
         if not today == self.today:
             self.today = today
-            self.base_price[self.symbol1][1] = 0
-            self.base_price[self.symbol2][1] = 0
             self.load_data()
             self.logger.info('change date')
-            return True
-
-        if not self.base_price[instrument][1]:
-            self.logger.info(f'not update base price success')
             return
 
-        rate = last_price / self.base_price[instrument][0] - 1
+        if not self.base_price.get(instrument):
+            self.logger.info(f'not base price {instrument}')
+            self.load_data()
+            return
+
+        rate = last_price / self.base_price[instrument] - 1
         self.change_rate[instrument] = round(rate, 8)
         if self.change_rate.get(self.symbol1) and self.change_rate.get(self.symbol2):
             change_diff = (self.change_rate[self.symbol1] - self.change_rate[self.symbol2]) * 100
             self.logger.info(f'base price: {self.base_price} change rate: {self.change_rate} change_diff: {change_diff}')
+
             if change_diff > self.open_rate:
                 self.singal_dir = Direction.LONG
             elif change_diff < -self.open_rate:
@@ -100,24 +111,41 @@ class ChangeRateDiffStrategy():
 
             self.logger.info(f'max_profit_rate:{self.max_profit_rate} now profit_rate:{profit_rate}')
 
-            if profit_rate <= self.max_profit_rate - 0.3:
+            if profit_rate <= self.max_profit_rate - self.stop_profit_decline_rate:
+                vol = cash / last_price
+
+                if vol * 0.8 <= s1_position_long.volume <= vol * 1.2:
+                    trade_vol = s1_position_long.volume
+                else:
+                    trade_vol = vol
+
                 if s1_position_long.volume:
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                        Direction.LONG,OrderPriceType.LIMIT, str(last_price),s1_position_long.volume)
+                        Direction.LONG,OrderPriceType.LIMIT, str(last_price),trade_vol)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                        Direction.SHORT, OrderPriceType.LIMIT, str(last_price),s2_position_short.volume)
+                        Direction.SHORT, OrderPriceType.LIMIT, str(last_price),trade_vol)
                     self.logger.info('close symbol1 long symbol2 short')
                     self.trading_flag = time.time()
+                    self.max_profit_rate = 0
                 if s2_position_long.volume:
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                         Direction.SHORT, OrderPriceType.LIMIT, str(last_price),s1_position_short.volume)
+                         Direction.SHORT, OrderPriceType.LIMIT, str(last_price),trade_vol)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                         Direction.LONG, OrderPriceType.LIMIT,str(last_price), s2_position_long.volume)
+                         Direction.LONG, OrderPriceType.LIMIT,str(last_price), trade_vol)
                     self.logger.info('close symbol2 long symbol1 short')
                     self.trading_flag = time.time()
-
+                    self.max_profit_rate = 0
         else:
+            self.max_profit_rate = 0
             if self.singal_dir:
+
+                if self.singal_dir == Direction.LONG and s1_position_long.volume:
+                    self.logger.info(f'holding {self.singal_dir}')
+                    return
+                elif self.singal_dir == Direction.SHORT and s2_position_long.volume:
+                    self.logger.info(f'holding {self.singal_dir}')
+                    return
+
                 self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.OPEN,
                                 self.singal_dir, OrderPriceType.LIMIT, str(last_price), cash=self.params['cash'])
                 self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.OPEN,
@@ -126,6 +154,5 @@ class ChangeRateDiffStrategy():
                 self.logger.info(f'open {self.singal_dir}')
                 self.trading_flag = time.time()
 
-
-
+                self.singal_dir = None
 
