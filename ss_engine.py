@@ -113,10 +113,19 @@ class SsEngine:
                         s1, s2 = param["symbol_pair"].split('_')
                         self.ms_stub.subscribe_stream_in_new_thread(instruments=[s1, s2], on_quote=self.on_quote)
                         p = PortfolioProcess(self, instrument_config)
-                        self.portfolio_maps[s1] = p
-                        self.portfolio_maps[s2] = p
-                        self.portfolio_maps[instrument] = p
-                        continue
+                        # self.portfolio_maps[s1] = p
+                        # self.portfolio_maps[s2] = p
+                        self.portfolio_maps[instrument] = [p]
+                        if self.portfolio_maps.get(s1):
+                            self.portfolio_maps[s1].append(p)
+                        else:
+                            self.portfolio_maps[s1] = [p]
+
+                        if self.portfolio_maps.get(s2):
+                            self.portfolio_maps[s2].append(p)
+                        else:
+                            self.portfolio_maps[s2] = [p]
+
                     else:
                         self.portfolio_maps[instrument] = PortfolioProcess(self, instrument_config)
         print(self.portfolio_maps)
@@ -137,9 +146,10 @@ class SsEngine:
 
         self.instrument_quote_time_map.update({instrument: quote})
 
-        p = self.portfolio_maps.get(instrument)
-        if p:
-            p.on_quote(quote)
+        p_list = self.portfolio_maps.get(instrument)
+        if p_list:
+            for p in p_list:
+                p.on_quote(quote)
         else:
             self.logger.info(f'not portfolio {instrument}', quote)
 
