@@ -71,9 +71,10 @@ class SsEngine:
 
             message = json.loads(message['data'])
             instrument = message['instrument']
-            p = self.portfolio_maps.get(message['instrument'])
-            if p:
-                p.update_param(message)
+            p_list = self.portfolio_maps.get(message['instrument'])
+            if p_list:
+                for p in p_list:
+                    p.update_param(message)
                 self.logger.info(f'update_param {instrument}:{message}')
             else:
                 self.portfolio_maps[message['instrument']] = PortfolioProcess(self, message)
