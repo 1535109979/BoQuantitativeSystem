@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
     save_data = UseInstrumentConfig(
         account_id='chao',
-        instrument='SOLUSDT_TRXUSDT',
+        instrument='TRXUSDT_ADAUSDT',
         status='ENABLE',
         cash=100,
         windows=100,
@@ -79,9 +79,9 @@ if __name__ == '__main__':
         order_price_type='LIMIT',
         leverage=1,
         param_json={
-                    "open_rate": 5, "close_rate": 3,
-                    "symbol_pair": "SOLUSDT_TRXUSDT",
-                    "stop_profit_decline_rate": 0.5,
+                    "open_rate": 2, "close_rate": 3,
+                    "symbol_pair": "TRXUSDT_ADAUSDT",
+                    "stop_profit_decline_rate": 1,
                     },
         update_time=datetime.now(),
     )

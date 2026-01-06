@@ -88,7 +88,7 @@ class ChangeRateDiffStrategy():
     def cal_singal(self, quote):
 
         if self.trading_flag:
-            if time.time() - self.trading_flag < 30:
+            if time.time() - self.trading_flag < 3:
                 self.logger.info(f'filter by trading flag')
                 return
 
@@ -117,8 +117,8 @@ class ChangeRateDiffStrategy():
         if s2_position_short.volume:
             s2_position_short.update_pnl(self.latest_price_map.get(self.symbol2))
 
-        self.logger.info(f's1 long:{s1_position_long} s1 short{s1_position_short} '
-                         f's2 long:{s2_position_long} s2 short{s2_position_short} ')
+        # self.logger.info(f's1 long:{s1_position_long} s1 short{s1_position_short} '
+        #                  f's2 long:{s2_position_long} s2 short{s2_position_short} ')
         self.logger.info(f's1 long:volume={s1_position_long.volume} pnl={s1_position_long.pnl} ,'
                          f's1 short:volume={s1_position_short.volume} pnl={s1_position_short.pnl}, '
                          f's2 long:volume={s2_position_long.volume} pnl={s2_position_long.pnl} ,'
@@ -138,15 +138,16 @@ class ChangeRateDiffStrategy():
 
             if profit_rate <= self.max_profit_rate - self.stop_profit_decline_rate:
                 if s1_position_long.volume:
-
                     if vol_s1 * 0.8 <= s1_position_long.volume <= vol_s1 * 1.2:
                         trade_vol1 = s1_position_long.volume
                     else:
-                        trade_vol1 = vol_s1
+                        decimal_places = len(str(s1_position_long.volume).split('.')[1])
+                        trade_vol1 = round(vol_s1, decimal_places)
                     if vol_s2 * 0.8 <= s2_position_short.volume <= vol_s2 * 1.2:
                         trade_vol2 = s2_position_long.volume
                     else:
-                        trade_vol2 = vol_s2
+                        decimal_places = len(str(s2_position_short.volume).split('.')[1])
+                        trade_vol2 = round(vol_s2, decimal_places)
 
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                         Direction.LONG,OrderPriceType.LIMIT, str(price_s1),trade_vol1)
@@ -157,15 +158,16 @@ class ChangeRateDiffStrategy():
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
                 if s2_position_long.volume:
-
                     if vol_s1 * 0.8 <= s1_position_short.volume <= vol_s1 * 1.2:
                         trade_vol1 = s1_position_short.volume
                     else:
-                        trade_vol1 = vol_s1
+                        decimal_places = len(str(s1_position_short.volume).split('.')[1])
+                        trade_vol1 = round(vol_s1, decimal_places)
                     if vol_s2 * 0.8 <= s2_position_long.volume <= vol_s2 * 1.2:
                         trade_vol2 = s2_position_long.volume
                     else:
-                        trade_vol2 = vol_s2
+                        decimal_places = len(str(s2_position_long.volume).split('.')[1])
+                        trade_vol2 = round(vol_s2, decimal_places)
 
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                          Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),trade_vol1)
