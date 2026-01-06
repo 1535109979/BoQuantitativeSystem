@@ -21,11 +21,13 @@ class ChangeRateDiffStrategy():
         self.symbol1, self.symbol2 = param_json['symbol_pair'].split('_')
         self.today = date.today()
         self.base_price = {}
+        self.latest_price_map = {}
         self.change_rate = {}
         self.singal_dir = None
         self.trading_flag = None
         self.df_s1_today = None
         self.df_s2_today = None
+        self.daily_open_flag = None
         self.max_profit_rate = 0
         self.load_data()
 
@@ -53,6 +55,8 @@ class ChangeRateDiffStrategy():
     def cal_indicator(self, quote):
         last_price = float(quote['last_price'])
         instrument = quote['symbol']
+        self.latest_price_map[instrument] = last_price
+
         self.singal_dir = None
 
         today = date.today()
@@ -66,6 +70,11 @@ class ChangeRateDiffStrategy():
             self.logger.info(f'not base price {instrument}')
             self.load_data()
             return
+
+        if self.daily_open_flag:
+            if self.daily_open_flag == today:
+                self.logger.info('skip by daily open')
+                return
 
         rate = last_price / self.base_price[instrument] - 1
         self.change_rate[instrument] = round(rate, 8)
@@ -82,7 +91,6 @@ class ChangeRateDiffStrategy():
 
     @common_exception(log_flag=True)
     def cal_singal(self, quote):
-        last_price = float(quote['last_price'])
 
         if self.trading_flag:
             if time.time() - self.trading_flag < 30:
@@ -101,8 +109,24 @@ class ChangeRateDiffStrategy():
         self.logger.info(f's1 long pnl:{s1_position_long.pnl} ,s1 short pnl:{s1_position_short.pnl}, '
                          f's2 long pnl:{s2_position_long.pnl} ,s2 short pnl:{s2_position_short.pnl}')
 
+        cash = self.params['cash']
+        price_s1 = self.latest_price_map[self.symbol1]
+        price_s2 = self.latest_price_map[self.symbol2]
+        vol_s1 = cash / price_s1
+        vol_s2 = cash / price_s2
+
+        if vol_s1 * 0.8 <= s1_position_long.volume <= vol_s1 * 1.2:
+            trade_vol1 = s1_position_long.volume
+        else:
+            trade_vol1 = vol_s1
+
+        if vol_s2 * 0.8 <= s1_position_long.volume <= vol_s2 * 1.2:
+            trade_vol2 = s1_position_long.volume
+        else:
+            trade_vol2 = vol_s2
+
         if s1_position_long.volume or s2_position_long.volume:
-            cash = self.params['cash']
+
             profit = s1_position_long.pnl + s2_position_long.pnl + s1_position_short.pnl + s2_position_short.pnl
             profit_rate = profit / cash
 
@@ -112,26 +136,21 @@ class ChangeRateDiffStrategy():
             self.logger.info(f'max_profit_rate:{self.max_profit_rate} now profit_rate:{profit_rate}')
 
             if profit_rate <= self.max_profit_rate - self.stop_profit_decline_rate:
-                vol = cash / last_price
 
-                if vol * 0.8 <= s1_position_long.volume <= vol * 1.2:
-                    trade_vol = s1_position_long.volume
-                else:
-                    trade_vol = vol
 
                 if s1_position_long.volume:
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                        Direction.LONG,OrderPriceType.LIMIT, str(last_price),trade_vol)
+                        Direction.LONG,OrderPriceType.LIMIT, str(price_s1),trade_vol1)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                        Direction.SHORT, OrderPriceType.LIMIT, str(last_price),trade_vol)
+                        Direction.SHORT, OrderPriceType.LIMIT, str(price_s2),trade_vol2)
                     self.logger.info('close symbol1 long symbol2 short')
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
                 if s2_position_long.volume:
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                         Direction.SHORT, OrderPriceType.LIMIT, str(last_price),trade_vol)
+                         Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),trade_vol1)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                         Direction.LONG, OrderPriceType.LIMIT,str(last_price), trade_vol)
+                         Direction.LONG, OrderPriceType.LIMIT,str(price_s2), trade_vol2)
                     self.logger.info('close symbol2 long symbol1 short')
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
@@ -147,12 +166,12 @@ class ChangeRateDiffStrategy():
                     return
 
                 self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.OPEN,
-                                self.singal_dir, OrderPriceType.LIMIT, str(last_price), cash=self.params['cash'])
+                                self.singal_dir, OrderPriceType.LIMIT, str(price_s1), cash=self.params['cash'])
                 self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.OPEN,
-                                self.singal_dir.get_opposite_direction(), OrderPriceType.LIMIT, str(last_price),
+                                self.singal_dir.get_opposite_direction(), OrderPriceType.LIMIT, str(price_s2),
                                                               cash=self.params['cash'])
-                self.logger.info(f'open {self.singal_dir}')
+                self.logger.info(f'open {self.singal_dir} {self.symbol1} {self.symbol2}')
                 self.trading_flag = time.time()
-
+                self.daily_open_flag = date.today()
                 self.singal_dir = None
 
