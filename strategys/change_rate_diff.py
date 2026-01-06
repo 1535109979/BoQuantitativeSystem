@@ -140,7 +140,7 @@ class ChangeRateDiffStrategy():
         if s1_position_long.volume or s2_position_long.volume:
 
             profit = s1_position_long.pnl + s2_position_long.pnl + s1_position_short.pnl + s2_position_short.pnl
-            profit_rate = profit / cash
+            profit_rate = (profit / cash) * 100
 
             if profit_rate > self.max_profit_rate:
                 self.max_profit_rate = profit_rate
