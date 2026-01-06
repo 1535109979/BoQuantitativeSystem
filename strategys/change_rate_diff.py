@@ -110,8 +110,12 @@ class ChangeRateDiffStrategy():
                          f's2 long pnl:{s2_position_long.pnl} ,s2 short pnl:{s2_position_short.pnl}')
 
         cash = self.params['cash']
-        price_s1 = self.latest_price_map[self.symbol1]
-        price_s2 = self.latest_price_map[self.symbol2]
+        price_s1 = self.latest_price_map.get(self.symbol1)
+        price_s2 = self.latest_price_map.get(self.symbol2)
+        if price_s1 is None or price_s2 is None:
+            self.logger.info(f'less latest price {self.latest_price_map}')
+            return
+
         vol_s1 = cash / price_s1
         vol_s2 = cash / price_s2
 
