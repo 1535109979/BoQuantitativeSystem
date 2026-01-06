@@ -101,6 +101,15 @@ class ChangeRateDiffStrategy():
         s2_position_short = self.strategy_process.td_gateway.account_book.get_instrument_position(
             f'{self.symbol2}.{self.strategy_process.td_gateway.exchange_type}', Direction.SHORT)
 
+        if s1_position_long.volume:
+            s1_position_long.update_pnl(self.latest_price_map.get(self.symbol1))
+        if s1_position_short.volume:
+            s1_position_short.update_pnl(self.latest_price_map.get(self.symbol1))
+        if s2_position_long.volume:
+            s2_position_long.update_pnl(self.latest_price_map.get(self.symbol2))
+        if s2_position_short.volume:
+            s2_position_short.update_pnl(self.latest_price_map.get(self.symbol2))
+
         self.logger.info(f's1 long:{s1_position_long} s1 short{s1_position_short} '
                          f's2 long:{s2_position_long} s2 short{s2_position_short} ')
 

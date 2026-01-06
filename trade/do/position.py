@@ -103,6 +103,13 @@ class InstrumentPosition:
         self.cost_amount = 0
         self.pnl = 0
 
+    def update_pnl(self,price):
+        if self.direction == Direction.LONG:
+            self.pnl = (price - self.open_avg) * self.volume
+        elif self.direction == Direction.SHORT:
+            self.pnl = (self.open_avg - price) * self.volume
+
+
 @dataclass
 class InstrumentPositionBook:
     """ 合约多空方向持仓信息 """
