@@ -127,18 +127,7 @@ class ChangeRateDiffStrategy():
         vol_s1 = cash / price_s1
         vol_s2 = cash / price_s2
 
-        if vol_s1 * 0.8 <= s1_position_long.volume <= vol_s1 * 1.2:
-            trade_vol1 = s1_position_long.volume
-        else:
-            trade_vol1 = vol_s1
-
-        if vol_s2 * 0.8 <= s1_position_long.volume <= vol_s2 * 1.2:
-            trade_vol2 = s1_position_long.volume
-        else:
-            trade_vol2 = vol_s2
-
         if s1_position_long.volume or s2_position_long.volume:
-
             profit = s1_position_long.pnl + s2_position_long.pnl + s1_position_short.pnl + s2_position_short.pnl
             profit_rate = (profit / cash) * 100
 
@@ -149,19 +138,41 @@ class ChangeRateDiffStrategy():
 
             if profit_rate <= self.max_profit_rate - self.stop_profit_decline_rate:
                 if s1_position_long.volume:
+
+                    if vol_s1 * 0.8 <= s1_position_long.volume <= vol_s1 * 1.2:
+                        trade_vol1 = s1_position_long.volume
+                    else:
+                        trade_vol1 = vol_s1
+                    if vol_s2 * 0.8 <= s2_position_short.volume <= vol_s2 * 1.2:
+                        trade_vol2 = s2_position_long.volume
+                    else:
+                        trade_vol2 = vol_s2
+
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                         Direction.LONG,OrderPriceType.LIMIT, str(price_s1),trade_vol1)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
                         Direction.SHORT, OrderPriceType.LIMIT, str(price_s2),trade_vol2)
-                    self.logger.info('close symbol1 long symbol2 short')
+                    self.logger.info(f'close symbol1 long symbol2 short '
+                                     f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
                 if s2_position_long.volume:
+
+                    if vol_s1 * 0.8 <= s1_position_short.volume <= vol_s1 * 1.2:
+                        trade_vol1 = s1_position_short.volume
+                    else:
+                        trade_vol1 = vol_s1
+                    if vol_s2 * 0.8 <= s2_position_long.volume <= vol_s2 * 1.2:
+                        trade_vol2 = s2_position_long.volume
+                    else:
+                        trade_vol2 = vol_s2
+
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                          Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),trade_vol1)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
                          Direction.LONG, OrderPriceType.LIMIT,str(price_s2), trade_vol2)
-                    self.logger.info('close symbol2 long symbol1 short')
+                    self.logger.info(f'close symbol2 long symbol1 short '
+                                     f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
         else:
