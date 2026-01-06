@@ -101,6 +101,13 @@ class ChangeRateDiffStrategy():
         s2_position_short = self.strategy_process.td_gateway.account_book.get_instrument_position(
             f'{self.symbol2}.{self.strategy_process.td_gateway.exchange_type}', Direction.SHORT)
 
+        cash = self.params['cash']
+        price_s1 = self.latest_price_map.get(self.symbol1)
+        price_s2 = self.latest_price_map.get(self.symbol2)
+        if price_s1 is None or price_s2 is None:
+            self.logger.info(f'less latest price {self.latest_price_map}')
+            return
+
         if s1_position_long.volume:
             s1_position_long.update_pnl(self.latest_price_map.get(self.symbol1))
         if s1_position_short.volume:
@@ -112,18 +119,10 @@ class ChangeRateDiffStrategy():
 
         self.logger.info(f's1 long:{s1_position_long} s1 short{s1_position_short} '
                          f's2 long:{s2_position_long} s2 short{s2_position_short} ')
-
         self.logger.info(f's1 long:volume={s1_position_long.volume} pnl={s1_position_long.pnl} ,'
                          f's1 short:volume={s1_position_short.volume} pnl={s1_position_short.pnl}, '
                          f's2 long:volume={s2_position_long.volume} pnl={s2_position_long.pnl} ,'
                          f's2 short:volume={s2_position_short.volume}  pnl:{s2_position_short.pnl}')
-
-        cash = self.params['cash']
-        price_s1 = self.latest_price_map.get(self.symbol1)
-        price_s2 = self.latest_price_map.get(self.symbol2)
-        if price_s1 is None or price_s2 is None:
-            self.logger.info(f'less latest price {self.latest_price_map}')
-            return
 
         vol_s1 = cash / price_s1
         vol_s2 = cash / price_s2
