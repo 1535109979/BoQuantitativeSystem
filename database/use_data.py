@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
     save_data = UseInstrumentConfig(
         account_id='chao',
-        instrument='TRXUSDT_ADAUSDT',
+        instrument='BTCUSDT_SOLUSDT',
         status='ENABLE',
         cash=100,
         windows=100,
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         leverage=1,
         param_json={
                     "open_rate": 2, "close_rate": 3,
-                    "symbol_pair": "TRXUSDT_ADAUSDT",
+                    "symbol_pair": "BTCUSDT_SOLUSDT",
                     "stop_profit_decline_rate": 1,
                     },
         update_time=datetime.now(),

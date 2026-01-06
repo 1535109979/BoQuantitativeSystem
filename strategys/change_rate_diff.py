@@ -117,15 +117,12 @@ class ChangeRateDiffStrategy():
         if s2_position_short.volume:
             s2_position_short.update_pnl(self.latest_price_map.get(self.symbol2))
 
-        # self.logger.info(f's1 long:{s1_position_long} s1 short{s1_position_short} '
-        #                  f's2 long:{s2_position_long} s2 short{s2_position_short} ')
+        self.logger.info(f's1 long:{s1_position_long} s1 short{s1_position_short} '
+                         f's2 long:{s2_position_long} s2 short{s2_position_short} ')
         self.logger.info(f's1 long:volume={s1_position_long.volume} pnl={s1_position_long.pnl} ,'
                          f's1 short:volume={s1_position_short.volume} pnl={s1_position_short.pnl}, '
                          f's2 long:volume={s2_position_long.volume} pnl={s2_position_long.pnl} ,'
                          f's2 short:volume={s2_position_short.volume}  pnl:{s2_position_short.pnl}')
-
-        vol_s1 = cash / price_s1
-        vol_s2 = cash / price_s2
 
         if s1_position_long.volume or s2_position_long.volume:
             profit = s1_position_long.pnl + s2_position_long.pnl + s1_position_short.pnl + s2_position_short.pnl
@@ -138,41 +135,20 @@ class ChangeRateDiffStrategy():
 
             if profit_rate <= self.max_profit_rate - self.stop_profit_decline_rate:
                 if s1_position_long.volume:
-                    if vol_s1 * 0.8 <= s1_position_long.volume <= vol_s1 * 1.2:
-                        trade_vol1 = s1_position_long.volume
-                    else:
-                        decimal_places = len(str(s1_position_long.volume).split('.')[1])
-                        trade_vol1 = round(vol_s1, decimal_places)
-                    if vol_s2 * 0.8 <= s2_position_short.volume <= vol_s2 * 1.2:
-                        trade_vol2 = s2_position_long.volume
-                    else:
-                        decimal_places = len(str(s2_position_short.volume).split('.')[1])
-                        trade_vol2 = round(vol_s2, decimal_places)
-
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                        Direction.LONG,OrderPriceType.LIMIT, str(price_s1),trade_vol1)
+                        Direction.LONG,OrderPriceType.LIMIT, str(price_s1),s1_position_long.volume)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                        Direction.SHORT, OrderPriceType.LIMIT, str(price_s2),trade_vol2)
+                        Direction.SHORT, OrderPriceType.LIMIT, str(price_s2),s2_position_short.volume)
                     self.logger.info(f'close symbol1 long symbol2 short '
                                      f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
-                if s2_position_long.volume:
-                    if vol_s1 * 0.8 <= s1_position_short.volume <= vol_s1 * 1.2:
-                        trade_vol1 = s1_position_short.volume
-                    else:
-                        decimal_places = len(str(s1_position_short.volume).split('.')[1])
-                        trade_vol1 = round(vol_s1, decimal_places)
-                    if vol_s2 * 0.8 <= s2_position_long.volume <= vol_s2 * 1.2:
-                        trade_vol2 = s2_position_long.volume
-                    else:
-                        decimal_places = len(str(s2_position_long.volume).split('.')[1])
-                        trade_vol2 = round(vol_s2, decimal_places)
 
+                if s2_position_long.volume:
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                         Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),trade_vol1)
+                         Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),s2_position_long.volume)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                         Direction.LONG, OrderPriceType.LIMIT,str(price_s2), trade_vol2)
+                         Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s1_position_short.volume)
                     self.logger.info(f'close symbol2 long symbol1 short '
                                      f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
                     self.trading_flag = time.time()
