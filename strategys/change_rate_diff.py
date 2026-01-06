@@ -71,11 +71,6 @@ class ChangeRateDiffStrategy():
             self.load_data()
             return
 
-        if self.daily_open_flag:
-            if self.daily_open_flag == today:
-                self.logger.info('skip by daily open')
-                return
-
         rate = last_price / self.base_price[instrument] - 1
         self.change_rate[instrument] = round(rate, 8)
         if self.change_rate.get(self.symbol1) and self.change_rate.get(self.symbol2):
@@ -106,8 +101,10 @@ class ChangeRateDiffStrategy():
         s2_position_short = self.strategy_process.td_gateway.account_book.get_instrument_position(
             f'{self.symbol2}.{self.strategy_process.td_gateway.exchange_type}', Direction.SHORT)
 
-        self.logger.info(f's1 long pnl:{s1_position_long.pnl} ,s1 short pnl:{s1_position_short.pnl}, '
-                         f's2 long pnl:{s2_position_long.pnl} ,s2 short pnl:{s2_position_short.pnl}')
+        self.logger.info(f's1 long:volume={s1_position_long.volume} pnl={s1_position_long.pnl} ,'
+                         f's1 short:volume={s1_position_short.volume} pnl={s1_position_short.pnl}, '
+                         f's2 long:volume={s2_position_long.volume} pnl={s2_position_long.pnl} ,'
+                         f's2 short:volume={s2_position_short.volume}  pnl:{s2_position_short.pnl}')
 
         cash = self.params['cash']
         price_s1 = self.latest_price_map.get(self.symbol1)
@@ -161,6 +158,11 @@ class ChangeRateDiffStrategy():
         else:
             self.max_profit_rate = 0
             if self.singal_dir:
+
+                if self.daily_open_flag:
+                    if self.daily_open_flag == date.today():
+                        self.logger.info('skip by daily open')
+                        return
 
                 if self.singal_dir == Direction.LONG and s1_position_long.volume:
                     self.logger.info(f'holding {self.singal_dir}')
