@@ -135,22 +135,24 @@ class ChangeRateDiffStrategy():
 
             if profit_rate <= self.max_profit_rate - self.stop_profit_decline_rate:
                 if s1_position_long.volume:
+                    self.logger.info(f'close symbol1 long symbol2 short '
+                                     f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                         Direction.LONG,OrderPriceType.LIMIT, str(price_s1),s1_position_long.volume)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
                         Direction.SHORT, OrderPriceType.LIMIT, str(price_s2),s2_position_short.volume)
-                    self.logger.info(f'close symbol1 long symbol2 short '
-                                     f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
+
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
 
                 if s2_position_long.volume:
-                    self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                         Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),s2_position_long.volume)
-                    self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                         Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s1_position_short.volume)
                     self.logger.info(f'close symbol2 long symbol1 short '
                                      f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
+                    self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
+                         Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),s1_position_short.volume)
+                    self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
+                         Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s2_position_long.volume)
+
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
         else:
