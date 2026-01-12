@@ -82,7 +82,7 @@ class ChangeRateDiffStrategy():
             elif change_diff < -self.open_rate:
                 self.signal = [Direction.SHORT,change_diff]
         else:
-            self.logger.info(f'base_price:{self.base_price} change_rate:{self.change_rate}')
+            self.logger.info(f'loss change_rate base_price:{self.base_price} change_rate:{self.change_rate}')
 
     @common_exception(log_flag=True)
     def cal_singal(self, quote):
@@ -144,6 +144,7 @@ class ChangeRateDiffStrategy():
 
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
+                    self.daily_open_flag = date.today()
 
                 if s2_position_long.volume:
                     self.logger.info(f'close symbol2 long symbol1 short '
@@ -155,6 +156,7 @@ class ChangeRateDiffStrategy():
 
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
+                    self.daily_open_flag = date.today()
         else:
             self.max_profit_rate = 0
             if self.signal:
