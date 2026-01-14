@@ -1,7 +1,7 @@
 import json
 import time
 from dataclasses import asdict
-from datetime import date
+from datetime import date, datetime
 
 from BoQuantitativeSystem.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 from BoQuantitativeSystem.utils.sys_exception import common_exception
@@ -69,6 +69,10 @@ class ChangeRateDiffStrategy():
         if not self.base_price.get(instrument):
             self.logger.info(f'not base price {instrument}')
             self.load_data()
+            return
+
+        now = datetime.now()
+        if (now.hour == 0) and (now.minute < 5):
             return
 
         rate = last_price / self.base_price[instrument] - 1
