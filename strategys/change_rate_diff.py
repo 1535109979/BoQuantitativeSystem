@@ -75,6 +75,11 @@ class ChangeRateDiffStrategy():
         if (now.hour == 0) and (now.minute < 5):
             return
 
+        elif (now.hour == 0) and (now.minute == 5):
+            self.load_data()
+            self.logger.info('change date')
+
+
         rate = last_price / self.base_price[instrument] - 1
         self.change_rate[instrument] = round(rate, 8)
         if self.change_rate.get(self.symbol1) and self.change_rate.get(self.symbol2):
