@@ -69,6 +69,7 @@ class TDGateway:
             elif direction == Direction.SHORT:
                 trade_price = Decimal(price) + Decimal(min_price_step) * order_step_muti
 
+
         if 'cash' in kwargs:
             volume = kwargs['cash'] / float(price)
             volume = round(volume * min_volume_muti) / min_volume_muti

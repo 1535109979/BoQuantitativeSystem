@@ -171,9 +171,9 @@ class BiFutureTd:
             return
         self.logger.warning("!! check_listen_ping !! %s", ts)
 
-        if ts < 60 * 9:
-            # self.gateway.on_front_disconnected(
-            #     "连续{}分钟没有收到on_ping回调".format(round(ts / 60, 1)))
+        if ts < 60 * 10:
+            self.gateway.on_front_disconnected(
+                "连续{}分钟没有收到on_ping回调,重启 _start_listen".format(round(ts / 60, 1)))
             self.close()
             self._start_listen()
 
