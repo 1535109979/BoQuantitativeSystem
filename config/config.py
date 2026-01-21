@@ -157,4 +157,10 @@ class Configs:
                 'secret_key': '1PYXKw57m7DtjFj4moeRtYlCSHwazR7NSyv75ysPeIxBcTfYcuFUdjc5f3B8Z8rR',
                 'account_id': 'chao'
             })
+        elif account_id == 'chen':
+            cls.crypto_setting.update({
+                'api_key': 'vCLacEftm2OlZJPXpwVoKgw6LFG87CULlhZE228A7W8AtP4iCCpLF84UEW0DImj4',  # chen
+                'secret_key': 'yE5DC4YWVOl9ZKjJW0ir6E6nuEUvUtTfNzSx0Sqf6H2Lb5faUk77kxS46lQbGeaJ',
+                'account_id': 'chao'
+            })
         return cls.crypto_setting
