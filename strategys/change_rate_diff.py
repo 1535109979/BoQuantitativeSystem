@@ -44,7 +44,7 @@ class ChangeRateDiffStrategy():
         df_s1 = self.strategy_process.df_data.get(self.symbol1)
         df_s2 = self.strategy_process.df_data.get(self.symbol2)
         self.df_s1_today = df_s1.loc[df_s1['start_time'].dt.date == today]
-        self.df_s2_today = df_s2.loc[df_s1['start_time'].dt.date == today]
+        self.df_s2_today = df_s2.loc[df_s2['start_time'].dt.date == today]
 
         if self.df_s1_today.empty or self.df_s2_today.empty:
             return
@@ -77,9 +77,6 @@ class ChangeRateDiffStrategy():
             self.load_data()
             self.logger.info('change date')
 
-        elif (now.hour == 0) and (now.minute < 10):
-            return
-
         rate = last_price / self.base_price[instrument] - 1
         self.change_rate[instrument] = round(rate, 8)
         if self.change_rate.get(self.symbol1) and self.change_rate.get(self.symbol2):
@@ -92,6 +89,10 @@ class ChangeRateDiffStrategy():
                 self.signal = [Direction.SHORT,change_diff]
         else:
             self.logger.info(f'loss change_rate base_price:{self.base_price} change_rate:{self.change_rate}')
+
+        if (now.hour == 0) and (now.minute < 10):
+            self.logger.info('skip by time')
+            self.signal = None
 
     @common_exception(log_flag=True)
     def cal_singal(self, quote):
