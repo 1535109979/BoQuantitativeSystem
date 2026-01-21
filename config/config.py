@@ -145,6 +145,7 @@ class Configs:
 
     @classmethod
     def get_setting(cls, account_id):
+        # ip 43.155.76.153  203.175.14.43
         if account_id == 'bo':
             cls.crypto_setting.update({
                 'api_key': '8kHJ8xMwb8wZkrTy17IVOym4CDo5qS6JFP8suvpsDaWCqjuBuIAn29HFYKuQM1bE',       # bo
@@ -159,8 +160,8 @@ class Configs:
             })
         elif account_id == 'chen':
             cls.crypto_setting.update({
-                'api_key':    'vCLacEftm2OlZJPXpwVoKgw6LFG87CULlhZE228A7W8AtP4iCCpLF84UEW0DImj4',  # chen
-                'secret_key': 'yE5DC4YWVOl9ZKjJW0ir6E6nuEUvUtTfNzSx0Sqf6H2Lb5faUk77kxS46lQbGeaJ',
+                'api_key':    'z8JT8HXJl7j2uqL7SRomhKuaYR7zA4PIH1gnPUBezUTvl47FRrkvLuTP9USEAYMH',  # chen
+                'secret_key': 'lfyzvP3170nerHl3YhtqqkCilC7FhKNT3MOTvDh5NGx2hUCE2u4xCZXTfkjZM5br',
                 'account_id': 'chen'
             })
         return cls.crypto_setting
