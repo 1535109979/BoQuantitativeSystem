@@ -9,7 +9,7 @@ from BoQuantitativeSystem.config.config import Configs
 
 # HMAC authentication with API key and secret
 
-setting = Configs.get_setting('bo')
+setting = Configs.get_setting('chen')
 
 key=setting.get('api_key')
 secret=setting.get('secret_key')
