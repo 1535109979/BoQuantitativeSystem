@@ -9,14 +9,18 @@ from BoQuantitativeSystem.config.config import Configs
 
 # HMAC authentication with API key and secret
 
-setting = Configs.get_setting('chen')
+setting = Configs.get_setting('bo')
 
-hmac_client = UMFutures(key=setting.get('api_key'), secret=setting.get('secret_key'))
+key=setting.get('api_key')
+secret=setting.get('secret_key')
+print(key)
+print(secret)
+hmac_client = UMFutures(key=key, secret=secret)
 # da = hmac_client.query('/futures/data/openInterestHist')
 # print(da)
 
 res = hmac_client.account(recvWindow=6000)
-print(res.keys())
+print(res)
 # print(res['positions'])
 # for s in res['assets']:
 #     print(s)
