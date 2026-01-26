@@ -18,10 +18,14 @@ class UseInstrumentConfig(Model):
     open_direction = CharField()
     stop_loss_rate = FloatField()
     stop_profit_rate = FloatField()
+    open_rate = FloatField()
+    win_stop_profit_rate = FloatField()
+    loss_stop_profit_rate = FloatField()
     order_price_delta = IntegerField()
     order_price_type = CharField()
     leverage = IntegerField()
     param_json = CharField()
+    daily_trade_flag = DateTimeField()
 
     update_time = DateTimeField()
 
@@ -65,9 +69,9 @@ if __name__ == '__main__':
 
     save_data = UseInstrumentConfig(
         account_id='chao',
-        instrument='BTCUSDT_SOLUSDT',
+        instrument='DOGEUSDT_TRXUSDT',
         status='ENABLE',
-        cash=100,
+        cash=200,
         windows=100,
         roll_mean_period=400,
         interval_period=200,
@@ -75,14 +79,14 @@ if __name__ == '__main__':
         open_direction='LONG',
         stop_loss_rate=10,
         stop_profit_rate=1.3,
+        open_rate=2,
+        win_stop_profit_rate=4,
+        loss_stop_profit_rate=2,
         order_price_delta=10,
         order_price_type='LIMIT',
         leverage=1,
-        param_json={
-                    "open_rate": 2, "close_rate": 3,
-                    "symbol_pair": "BTCUSDT_SOLUSDT",
-                    "stop_profit_decline_rate": 1,
-                    },
+        daily_trade_flag = 0,
+        param_json={'symbol_pair': 'DOGEUSDT_TRXUSDT'},
         update_time=datetime.now(),
     )
     save_data.save()
