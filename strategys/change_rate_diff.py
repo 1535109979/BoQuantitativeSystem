@@ -181,10 +181,20 @@ class ChangeRateDiffStrategy():
                 if s1_position_long.volume:
                     self.logger.info(f'insert order close symbol1 long symbol2 short '
                                      f'max_profit_rate={self.max_profit_rate} now_profit_rate={self.profit_rate}')
-                    self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                        Direction.LONG,OrderPriceType.LIMIT, str(price_s1),s1_position_long.volume)
-                    self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                        Direction.SHORT, OrderPriceType.LIMIT, str(price_s2),s2_position_short.volume)
+
+                    if s1_position_long.volume * self.latest_price_map.get(self.symbol1) > cash * 1.2:
+                        self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
+                            Direction.LONG, OrderPriceType.LIMIT,str(price_s1), s1_position_long.volume, cash=cash)
+                    else:
+                        self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
+                            Direction.LONG,OrderPriceType.LIMIT, str(price_s1),s1_position_long.volume)
+
+                    if s2_position_short.volume * self.latest_price_map.get(self.symbol2) > cash * 1.2:
+                        self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
+                             Direction.SHORT, OrderPriceType.LIMIT,str(price_s2), s2_position_short.volume,cash=cash)
+                    else:
+                        self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
+                            Direction.SHORT, OrderPriceType.LIMIT, str(price_s2),s2_position_short.volume)
 
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
@@ -194,10 +204,20 @@ class ChangeRateDiffStrategy():
                 if s2_position_long.volume:
                     self.logger.info(f'insert order close symbol2 long symbol1 short '
                                      f'max_profit_rate={self.max_profit_rate} now_profit_rate={self.profit_rate}')
-                    self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                         Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),s1_position_short.volume)
-                    self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                         Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s2_position_long.volume)
+
+                    if s1_position_short.volume * self.latest_price_map.get(self.symbol1) > cash * 1.2:
+                        self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
+                             Direction.SHORT, OrderPriceType.LIMIT,str(price_s1), s1_position_short.volume,cash=cash)
+                    else:
+                        self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
+                             Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),s1_position_short.volume)
+
+                    if s2_position_long.volume * self.latest_price_map.get(self.symbol1) > cash * 1.2:
+                        self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
+                            Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s2_position_long.volume,cash=cash)
+                    else:
+                        self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
+                            Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s2_position_long.volume)
 
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
@@ -205,6 +225,7 @@ class ChangeRateDiffStrategy():
                     self.save_daily_trade_flag(self.daily_trade_flag)
         else:
             self.max_profit_rate = 0
+            self.profit_rate = 0
             if self.signal:
 
                 if self.daily_trade_flag:

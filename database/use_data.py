@@ -69,16 +69,16 @@ if __name__ == '__main__':
 
 
     save_data = UseInstrumentConfig(
-        account_id='chao',
-        instrument='BNBUSDT_ADAUSDT',
-        open_rate=1,
-        win_stop_profit_rate=4,
+        account_id='chen',
+        cash=1000,
+        instrument='DOGEUSDT_BNBUSDT',
+        open_rate=2,
+        win_stop_profit_rate=3,
         loss_stop_profit_rate=3,
         daily_trade_flag=0,
         max_profit_rate=0,
         param_json={},
         status='ENABLE',
-        cash=200,
         windows=100,
         roll_mean_period=400,
         interval_period=200,
