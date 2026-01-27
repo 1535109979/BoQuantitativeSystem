@@ -4,6 +4,7 @@ from dataclasses import asdict
 from datetime import date, datetime
 
 from BoQuantitativeSystem.database.use_data import UseInstrumentConfig
+from BoQuantitativeSystem.utils.aio_timer import AioTimer
 from BoQuantitativeSystem.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 from BoQuantitativeSystem.utils.sys_exception import common_exception
 
@@ -34,8 +35,17 @@ class ChangeRateDiffStrategy():
         self.df_s1_today = None
         self.df_s2_today = None
         self.update_data_flag = False
-        self.max_profit_rate = 0
+        self.profit_rate = 0
         self.load_data()
+        self._save_profit_rate_timer(interval=60)
+
+    def _save_profit_rate_timer(self, interval):
+        def _func():
+            self._save_profit_rate_timer(interval)
+
+            self.save_profit_rate()
+
+        AioTimer.new_timer(_delay=interval, _func=_func)
 
     def update_param(self):
         self.load_data()
@@ -144,33 +154,33 @@ class ChangeRateDiffStrategy():
 
         if s1_position_long.volume or s2_position_long.volume:
             profit = s1_position_long.pnl + s2_position_long.pnl + s1_position_short.pnl + s2_position_short.pnl
-            profit_rate = (profit / cash) * 100
+            self.profit_rate = (profit / cash) * 100
 
-            if profit_rate > self.max_profit_rate:
-                self.max_profit_rate = profit_rate
+            if self.profit_rate > self.max_profit_rate:
+                self.max_profit_rate = self.profit_rate
                 self.logger.info(f'update and save max profit rate: {self.max_profit_rate}')
                 self.save_max_profit_rate(self.max_profit_rate)
 
-            self.logger.info(f'max_profit_rate:{self.max_profit_rate} now profit_rate:{profit_rate}')
+            self.logger.info(f'max_profit_rate:{self.max_profit_rate} now profit_rate:{self.profit_rate}')
 
             close_flag = False
-            if profit_rate > 0:
-                if profit_rate <= self.max_profit_rate - self.win_stop_profit_rate:
+            if self.profit_rate > 0:
+                if self.profit_rate <= self.max_profit_rate - self.win_stop_profit_rate:
                     close_flag = True
-                    self.logger.info(f'close by win profit_rate={profit_rate} '
+                    self.logger.info(f'close by win profit_rate={self.profit_rate} '
                                      f'max_profit_rate={self.max_profit_rate} '
                                      f'loss_stop_profit_rate={self.loss_stop_profit_rate}')
             else:
-                if profit_rate <= self.max_profit_rate - self.loss_stop_profit_rate:
+                if self.profit_rate <= self.max_profit_rate - self.loss_stop_profit_rate:
                     close_flag = True
-                    self.logger.info(f'close by loss profit_rate={profit_rate} '
+                    self.logger.info(f'close by loss profit_rate={self.profit_rate} '
                                      f'max_profit_rate={self.max_profit_rate} '
                                      f'loss_stop_profit_rate={self.loss_stop_profit_rate}')
 
             if close_flag:
                 if s1_position_long.volume:
                     self.logger.info(f'insert order close symbol1 long symbol2 short '
-                                     f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
+                                     f'max_profit_rate={self.max_profit_rate} now_profit_rate={self.profit_rate}')
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                         Direction.LONG,OrderPriceType.LIMIT, str(price_s1),s1_position_long.volume)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
@@ -183,7 +193,7 @@ class ChangeRateDiffStrategy():
 
                 if s2_position_long.volume:
                     self.logger.info(f'insert order close symbol2 long symbol1 short '
-                                     f'max_profit_rate={self.max_profit_rate} now_profit_rate={profit_rate}')
+                                     f'max_profit_rate={self.max_profit_rate} now_profit_rate={self.profit_rate}')
                     self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                          Direction.SHORT, OrderPriceType.LIMIT, str(price_s1),s1_position_short.volume)
                     self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
@@ -231,4 +241,9 @@ class ChangeRateDiffStrategy():
     def save_max_profit_rate(self, max_profit_rate):
         update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
         update_date.max_profit_rate = max_profit_rate
+        update_date.save()
+
+    def save_profit_rate(self):
+        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
+        update_date.windows = self.profit_rate
         update_date.save()

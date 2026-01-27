@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
 
     data = dbm.query_data(table_name='use_instrument_config')
-    # print(len(data['data']))
+    print(len(data['data']))
     for row in data['data']:
         print(row)
 
