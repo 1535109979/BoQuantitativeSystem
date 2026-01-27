@@ -3,6 +3,7 @@ from datetime import datetime
 from peewee import *
 
 from BoQuantitativeSystem.database.dbm import *
+from BoQuantitativeSystem.utils.exchange_enum import Direction
 
 
 class UseInstrumentConfig(Model):
@@ -62,35 +63,35 @@ if __name__ == '__main__':
     # for use_instrument_config in use_instrument_configs:
     #     print(use_instrument_config.__data__)
 
-    # update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument=='BNBUSDT_XRPUSDT')
+    update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument=='DOGEUSDT_BNBUSDT')
     # update_date.update_time = datetime.now()
-    # update_date.status = 'UNABLE'
-    # update_date.save()
+    update_date.param_json = {'position_flag': Direction.LONG.value}
+    update_date.save()
 
 
-    save_data = UseInstrumentConfig(
-        account_id='chen',
-        cash=1000,
-        instrument='DOGEUSDT_BNBUSDT',
-        open_rate=2,
-        win_stop_profit_rate=3,
-        loss_stop_profit_rate=3,
-        daily_trade_flag=0,
-        max_profit_rate=0,
-        param_json={},
-        status='ENABLE',
-        windows=100,
-        roll_mean_period=400,
-        interval_period=200,
-        strategy_name=['rate_diff'],
-        open_direction='LONG',
-        stop_loss_rate=10,
-        stop_profit_rate=1.3,
-        order_price_delta=10,
-        order_price_type='LIMIT',
-        leverage=1,
-        update_time=datetime.now(),
-    )
-    save_data.save()
+    # save_data = UseInstrumentConfig(
+    #     account_id='fen',
+    #     cash=1000,
+    #     instrument='DOGEUSDT_BNBUSDT',
+    #     open_rate=2,
+    #     win_stop_profit_rate=3,
+    #     loss_stop_profit_rate=3,
+    #     daily_trade_flag=0,
+    #     max_profit_rate=0,
+    #     param_json={'position_flag': Direction.LONG},
+    #     status='ENABLE',
+    #     windows=100,
+    #     roll_mean_period=400,
+    #     interval_period=200,
+    #     strategy_name=['rate_diff'],
+    #     open_direction='LONG',
+    #     stop_loss_rate=10,
+    #     stop_profit_rate=1.3,
+    #     order_price_delta=10,
+    #     order_price_type='LIMIT',
+    #     leverage=1,
+    #     update_time=datetime.now(),
+    # )
+    # save_data.save()
 
 
