@@ -245,5 +245,5 @@ class ChangeRateDiffStrategy():
 
     def save_profit_rate(self):
         update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
-        update_date.windows = self.profit_rate
+        update_date.stop_profit_rate = round(self.profit_rate,2)
         update_date.save()
