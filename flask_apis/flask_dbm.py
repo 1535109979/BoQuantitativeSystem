@@ -62,18 +62,18 @@ if __name__ == '__main__':
     # data = dbm.query_data(table_name='table_updated_time')
     # print(data)
 
-    data = dbm.query_data(table_name='trade_info')
+    # data = dbm.query_data(table_name='trade_info')
     # data = dbm.query_data(table_name='account_value')
-    print(data)
+    # print(data)
 
     # data = dbm.query_last_account_value(account_id='chao')
     # print(data)
 
 
-    # data = dbm.query_data(table_name='use_instrument_config')
+    data = dbm.query_data(table_name='use_instrument_config')
     # print(len(data['data']))
-    # for row in data['data']:
-    #     print(row)
+    for row in data['data']:
+        print(row)
 
     # data = {
     #     "account_id": "chao",

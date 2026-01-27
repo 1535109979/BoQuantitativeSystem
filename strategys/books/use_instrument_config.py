@@ -15,11 +15,16 @@ class UseInstrumentConfigBook:
     open_direction: str
     stop_loss_rate: float
     stop_profit_rate: float
+    open_rate: float
+    win_stop_profit_rate: float
+    loss_stop_profit_rate: float
+    max_profit_rate: float
     order_price_delta: int
     order_price_type: str
     leverage: int
     param_json: str
     update_time: datetime
+    daily_trade_flag: datetime
 
     @classmethod
     def create_by_row(cls, r):
@@ -34,11 +39,16 @@ class UseInstrumentConfigBook:
             strategy_name=r.strategy_name,
             open_direction=r.open_direction,
             stop_loss_rate=r.stop_loss_rate,
+            open_rate=r.open_rate,
+            win_stop_profit_rate=r.win_stop_profit_rate,
+            loss_stop_profit_rate=r.loss_stop_profit_rate,
+            max_profit_rate=r.max_profit_rate,
             stop_profit_rate=r.stop_profit_rate,
             order_price_delta=r.order_price_delta,
             order_price_type=r.order_price_type,
             leverage=r.leverage,
             param_json=r.param_json,
             update_time=r.update_time,
+            daily_trade_flag=r.daily_trade_flag,
         )
 

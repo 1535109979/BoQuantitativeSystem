@@ -109,9 +109,7 @@ class SsEngine:
                 instrument_config = asdict(instrument_config)
                 if instrument_config['status'] == 'ENABLE':
                     if 'rate_diff' in instrument_config['strategy_name']:
-                        param = instrument_config['param_json']
-                        param = eval(param)
-                        s1, s2 = param["symbol_pair"].split('_')
+                        s1, s2 = instrument_config["instrument"].split('_')
                         self.ms_stub.subscribe_stream_in_new_thread(instruments=[s1, s2], on_quote=self.on_quote)
                         p = PortfolioProcess(self, instrument_config)
                         # self.portfolio_maps[s1] = p

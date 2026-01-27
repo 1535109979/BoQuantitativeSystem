@@ -18,6 +18,8 @@ class ChangeRateDiffStrategy():
         self.open_rate = params['open_rate']
         self.win_stop_profit_rate = params['win_stop_profit_rate']
         self.loss_stop_profit_rate = params['loss_stop_profit_rate']
+        self.max_profit_rate = params['max_profit_rate']
+        self.daily_trade_flag = params['daily_trade_flag']
         # self.close_rate = param_json['close_rate']
         # self.stop_profit_decline_rate = param_json['stop_profit_decline_rate']
 
@@ -31,7 +33,6 @@ class ChangeRateDiffStrategy():
         self.trading_flag = None
         self.df_s1_today = None
         self.df_s2_today = None
-        self.daily_trade_flag = params['daily_trade_flag']
         self.update_data_flag = False
         self.max_profit_rate = 0
         self.load_data()
@@ -147,6 +148,8 @@ class ChangeRateDiffStrategy():
 
             if profit_rate > self.max_profit_rate:
                 self.max_profit_rate = profit_rate
+                self.logger.info(f'update and save max profit rate: {self.max_profit_rate}')
+                self.save_max_profit_rate(self.max_profit_rate)
 
             self.logger.info(f'max_profit_rate:{self.max_profit_rate} now profit_rate:{profit_rate}')
 
@@ -176,7 +179,7 @@ class ChangeRateDiffStrategy():
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
                     self.daily_trade_flag = date.today()
-                    self.save_daily_trade_flag(self.instrument, self.daily_trade_flag)
+                    self.save_daily_trade_flag(self.daily_trade_flag)
 
                 if s2_position_long.volume:
                     self.logger.info(f'insert order close symbol2 long symbol1 short '
@@ -189,7 +192,7 @@ class ChangeRateDiffStrategy():
                     self.trading_flag = time.time()
                     self.max_profit_rate = 0
                     self.daily_trade_flag = date.today()
-                    self.save_daily_trade_flag(self.instrument, self.daily_trade_flag)
+                    self.save_daily_trade_flag(self.daily_trade_flag)
         else:
             self.max_profit_rate = 0
             if self.signal:
@@ -216,12 +219,16 @@ class ChangeRateDiffStrategy():
                                                               cash=self.params['cash'])
                 self.trading_flag = time.time()
                 self.daily_trade_flag = date.today()
-                self.save_daily_trade_flag(self.instrument, self.daily_trade_flag)
+                self.save_daily_trade_flag(self.daily_trade_flag)
                 self.signal = None
 
-    def save_daily_trade_flag(self,instrument, daily_trade_flag):
-        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == instrument)
+    def save_daily_trade_flag(self, daily_trade_flag):
+        self.logger.info(f'save daily_trade_flag={daily_trade_flag}')
+        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
         update_date.daily_is_trade = daily_trade_flag
         update_date.save()
         
-        
+    def save_max_profit_rate(self, max_profit_rate):
+        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
+        update_date.max_profit_rate = max_profit_rate
+        update_date.save()

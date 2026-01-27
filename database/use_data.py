@@ -21,6 +21,7 @@ class UseInstrumentConfig(Model):
     open_rate = FloatField()
     win_stop_profit_rate = FloatField()
     loss_stop_profit_rate = FloatField()
+    max_profit_rate = FloatField()
     order_price_delta = IntegerField()
     order_price_type = CharField()
     leverage = IntegerField()
@@ -69,7 +70,13 @@ if __name__ == '__main__':
 
     save_data = UseInstrumentConfig(
         account_id='chao',
-        instrument='DOGEUSDT_TRXUSDT',
+        instrument='BNBUSDT_ADAUSDT',
+        open_rate=1,
+        win_stop_profit_rate=4,
+        loss_stop_profit_rate=3,
+        daily_trade_flag=0,
+        max_profit_rate=0,
+        param_json={},
         status='ENABLE',
         cash=200,
         windows=100,
@@ -79,14 +86,9 @@ if __name__ == '__main__':
         open_direction='LONG',
         stop_loss_rate=10,
         stop_profit_rate=1.3,
-        open_rate=2,
-        win_stop_profit_rate=4,
-        loss_stop_profit_rate=2,
         order_price_delta=10,
         order_price_type='LIMIT',
         leverage=1,
-        daily_trade_flag = 0,
-        param_json={'symbol_pair': 'DOGEUSDT_TRXUSDT'},
         update_time=datetime.now(),
     )
     save_data.save()
