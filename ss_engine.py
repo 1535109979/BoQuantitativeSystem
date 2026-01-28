@@ -137,6 +137,9 @@ class SsEngine:
                 Dingding.send_msg(f'miss quote {instrument}')
 
     def on_quote(self, quote):
+        if not self.td_gateway:
+            return
+
         quote = {k: str(v) for k, v in quote.items() if v is not None}
         # print(time.time())
         # print(os.getpid(), self.account_id, self.td_gateway.account_book.balance, 'quote', quote['symbol'], quote)

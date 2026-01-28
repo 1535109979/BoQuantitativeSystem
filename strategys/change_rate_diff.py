@@ -112,18 +112,18 @@ class ChangeRateDiffStrategy():
             f'{self.symbol2}.{self.strategy_process.td_gateway.exchange_type}', Direction.SHORT)
 
         self.logger.info(f'{self.symbol1} long:{s1_position_long}')
-        self.logger.info(f'{self.symbol1} short{s1_position_short}')
+        self.logger.info(f'{self.symbol1} short:{s1_position_short}')
         self.logger.info(f'{self.symbol2} long:{s2_position_long}')
         self.logger.info(f'{self.symbol2} short:{s2_position_short}')
 
         if self.position_flag:
             if self.position_flag == 1:
-                s1_profit_rate = price_s1 / self.s1_open_price - 1
-                s2_profit_rate = - (price_s2 / self.s2_open_price - 1)
+                s1_profit_rate = (price_s1 / self.s1_open_price - 1)  * 100
+                s2_profit_rate = - (price_s2 / self.s2_open_price - 1) * 100
                 self.profit_rate = s1_profit_rate + s2_profit_rate
             elif self.position_flag == -1:
-                s1_profit_rate = -(price_s1 / self.s1_open_price - 1)
-                s2_profit_rate = (price_s2 / self.s2_open_price - 1)
+                s1_profit_rate = -(price_s1 / self.s1_open_price - 1) * 100
+                s2_profit_rate = (price_s2 / self.s2_open_price - 1) * 100
                 self.profit_rate = s1_profit_rate + s2_profit_rate
 
             if self.profit_rate > self.max_profit_rate:
