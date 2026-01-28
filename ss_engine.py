@@ -179,13 +179,13 @@ if __name__ == '__main__':
     account_ids = [row.account_id for row in
                    UseInstrumentConfig.select(UseInstrumentConfig.account_id).distinct()]
 
-    for account_id in account_ids:
-        p = Process(target=run_engine,args=(account_id,), daemon=True)
-        p.start()
+    # for account_id in account_ids:
+    #     p = Process(target=run_engine,args=(account_id,), daemon=True)
+    #     p.start()
 
     # Process(target=run_engine, args=('bo',), daemon=True).start()
 
-    # SsEngine('chao').start()
+    SsEngine('feng').start()
 
     while 1:
         pass
