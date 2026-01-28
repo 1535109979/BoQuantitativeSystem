@@ -81,7 +81,8 @@ class ChangeRateDiffStrategy():
 
             self.logger.info(f'base price: {self.base_price} latest_price_map:{self.latest_price_map} '
                              f'change rate: {self.change_rate} change_diff: {change_diff} '
-                             f'signal:{self.signal} position_flag:{self.position_flag}')
+                             f'signal:{self.signal} position_flag:{self.position_flag} '
+                             f'daily_trade_flag:{self.daily_trade_flag}')
         else:
             self.logger.info(f'loss change_rate base_price:{self.base_price} change_rate:{self.change_rate}')
 
@@ -217,7 +218,7 @@ class ChangeRateDiffStrategy():
         self.daily_trade_flag = date.today()
         self.logger.info(f'save daily_trade_flag={self.daily_trade_flag}')
         update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
-        update_date.daily_is_trade = self.daily_trade_flag
+        update_date.daily_trade_flag = self.daily_trade_flag
         update_date.save()
 
     def save_max_profit_rate(self, max_profit_rate):
