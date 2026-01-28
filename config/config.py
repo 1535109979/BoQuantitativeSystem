@@ -158,7 +158,7 @@ class Configs:
                 'secret_key': '1PYXKw57m7DtjFj4moeRtYlCSHwazR7NSyv75ysPeIxBcTfYcuFUdjc5f3B8Z8rR',
                 'account_id': 'chao'
             })
-        elif account_id == 'chen':
+        elif account_id == 'feng':
             cls.crypto_setting.update({
                 'api_key':    'z8JT8HXJl7j2uqL7SRomhKuaYR7zA4PIH1gnPUBezUTvl47FRrkvLuTP9USEAYMH',  # chen
                 'secret_key': 'lfyzvP3170nerHl3YhtqqkCilC7FhKNT3MOTvDh5NGx2hUCE2u4xCZXTfkjZM5br',
