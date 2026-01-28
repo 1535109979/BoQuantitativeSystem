@@ -102,6 +102,9 @@ class ChangeRateDiffStrategy():
         price_s1 = self.latest_price_map.get(self.symbol1)
         price_s2 = self.latest_price_map.get(self.symbol2)
 
+        if not price_s1 or not price_s2:
+            return
+
         s1_position_long = self.strategy_process.td_gateway.account_book.get_instrument_position(
             f'{self.symbol1}.{self.strategy_process.td_gateway.exchange_type}', Direction.LONG)
         s1_position_short = self.strategy_process.td_gateway.account_book.get_instrument_position(
