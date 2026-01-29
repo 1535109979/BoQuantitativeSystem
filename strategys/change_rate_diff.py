@@ -171,17 +171,17 @@ class ChangeRateDiffStrategy():
                     self.logger.info(f'insert order close symbol2 long symbol1 short')
                     if s2_position_long.volume * self.latest_price_map.get(self.symbol2) > cash * 1.5:
                         self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                            Direction.LONG, OrderPriceType.LIMIT,str(price_s1), s2_position_long.volume, cash=cash)
+                            Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s2_position_long.volume, cash=cash)
                     else:
                         self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
-                             Direction.LONG, OrderPriceType.LIMIT,str(price_s1), s2_position_long.volume)
+                             Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s2_position_long.volume)
 
                     if s1_position_short.volume * self.latest_price_map.get(self.symbol1) > cash * 1.5:
                         self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                             Direction.SHORT, OrderPriceType.LIMIT,str(price_s2), s1_position_short.volume,cash=cash)
+                             Direction.SHORT, OrderPriceType.LIMIT,str(price_s1), s1_position_short.volume,cash=cash)
                     else:
                         self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
-                             Direction.SHORT, OrderPriceType.LIMIT,str(price_s2), s1_position_short.volume)
+                             Direction.SHORT, OrderPriceType.LIMIT,str(price_s1), s1_position_short.volume)
 
                 self.save_position({'position_flag': 0, 's1_open_price': 0, 's2_open_price': 0})
                 self.save_daily_trade_flag()
