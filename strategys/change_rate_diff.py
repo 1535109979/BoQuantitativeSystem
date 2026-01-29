@@ -133,7 +133,10 @@ class ChangeRateDiffStrategy():
                 self.max_profit_rate = self.profit_rate
                 self.logger.info(f'update and save max profit rate: {self.max_profit_rate}')
                 self.save_max_profit_rate(self.max_profit_rate)
-            self.logger.info(f'max_profit_rate:{self.max_profit_rate} now profit_rate:{self.profit_rate}')
+
+            self.logger.info(f'price;{self.latest_price_map} '
+                             f's1_open_price:{self.s1_open_price} s2_open_price:{self.s2_open_price} '
+                             f'max_profit_rate:{self.max_profit_rate} now profit_rate:{self.profit_rate}')
 
             close_flag = False
 
@@ -166,7 +169,7 @@ class ChangeRateDiffStrategy():
 
                 elif self.position_flag == -1:
                     self.logger.info(f'insert order close symbol2 long symbol1 short')
-                    if s2_position_long * self.latest_price_map.get(self.symbol2) > cash * 1.5:
+                    if s2_position_long.volume * self.latest_price_map.get(self.symbol2) > cash * 1.5:
                         self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
                             Direction.LONG, OrderPriceType.LIMIT,str(price_s1), s2_position_long.volume, cash=cash)
                     else:
