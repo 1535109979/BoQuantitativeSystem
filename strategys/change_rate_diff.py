@@ -92,7 +92,7 @@ class ChangeRateDiffStrategy():
 
     @common_exception(log_flag=True)
     def cal_singal(self, quote):
-
+        self.profit_rate = 0
         if self.trading_flag:
             if time.time() - self.trading_flag < 3:
                 self.logger.info(f'filter by trading flag')
@@ -151,7 +151,7 @@ class ChangeRateDiffStrategy():
 
             if close_flag:
                 if self.position_flag == 1:
-                    self.logger.info(f'insert order close symbol1 long symbol2 short')
+                    self.logger.info(f'insert order close symbol1 {self.symbol1} long symbol2 {self.symbol2} short')
 
                     if s1_position_long.volume * self.latest_price_map.get(self.symbol1) > cash * 1.5:
                         self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
@@ -168,7 +168,7 @@ class ChangeRateDiffStrategy():
                              Direction.SHORT, OrderPriceType.LIMIT,str(price_s2),s2_position_short.volume)
 
                 elif self.position_flag == -1:
-                    self.logger.info(f'insert order close symbol2 long symbol1 short')
+                    self.logger.info(f'insert order close symbol2 {self.symbol2} long symbol1 {self.symbol1} short')
                     if s2_position_long.volume * self.latest_price_map.get(self.symbol2) > cash * 1.5:
                         self.strategy_process.td_gateway.insert_order(self.symbol2, OffsetFlag.CLOSE,
                             Direction.LONG, OrderPriceType.LIMIT,str(price_s2), s2_position_long.volume, cash=cash)
@@ -230,6 +230,7 @@ class ChangeRateDiffStrategy():
     def save_max_profit_rate(self, max_profit_rate):
         update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
         update_date.max_profit_rate = max_profit_rate
+        update_date.stop_profit_rate = 0
         update_date.save()
 
     def save_profit_rate(self):
