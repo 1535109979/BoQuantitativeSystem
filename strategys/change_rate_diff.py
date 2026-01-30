@@ -80,7 +80,8 @@ class ChangeRateDiffStrategy():
                 self.signal = Direction.SHORT
 
             self.logger.info(f'base price: {self.base_price} latest_price_map:{self.latest_price_map} '
-                             f'change rate: {self.change_rate} change_diff: {change_diff} '
+                             f'change rate: {self.change_rate} change_diff: {round(change_diff,4)} '
+                             f'{self.open_rate} {self.win_stop_profit_rate} {self.loss_stop_profit_rate}'
                              f'signal:{self.signal} position_flag:{self.position_flag} '
                              f'daily_trade_flag:{self.daily_trade_flag}')
         else:
