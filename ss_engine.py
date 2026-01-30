@@ -188,7 +188,7 @@ if __name__ == '__main__':
 
     # Process(target=run_engine, args=('bo',), daemon=True).start()
 
-    SsEngine('feng').start()
+    # SsEngine('feng').start()
 
     while 1:
         pass
