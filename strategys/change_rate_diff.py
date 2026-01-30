@@ -92,6 +92,7 @@ class ChangeRateDiffStrategy():
 
     @common_exception(log_flag=True)
     def cal_singal(self, quote):
+
         self.profit_rate = 0
         if self.trading_flag:
             if time.time() - self.trading_flag < 3:
@@ -195,8 +196,8 @@ class ChangeRateDiffStrategy():
 
             if self.signal:
                 if self.daily_trade_flag:
-                    if self.daily_trade_flag == date.today():
-                        self.logger.info('skip by daily open')
+                    if self.daily_trade_flag.date() == date.today():
+                        self.logger.info('skip by daily trade')
                         return
 
                 self.logger.info(f'insert order open {self.signal} {self.symbol1} {self.symbol2}')
