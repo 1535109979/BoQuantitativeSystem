@@ -100,6 +100,12 @@ class ChangeRateDiffStrategy():
                 self.logger.info(f'filter by trading flag')
                 return
 
+        if self.daily_trade_flag:
+            self.logger.info(f'check trade time {self.instrument} {self.daily_trade_flag}'
+                             f' {date.today()}')
+            if self.daily_trade_flag == date.today():
+                self.logger.info('skip by daily trade')
+
         cash = self.params['cash']
         price_s1 = self.latest_price_map.get(self.symbol1)
         price_s2 = self.latest_price_map.get(self.symbol2)
@@ -195,12 +201,12 @@ class ChangeRateDiffStrategy():
                                   f'max_profit_rate: {self.max_profit_rate} profit_rate: {self.profit_rate}')
                 return
 
-            if self.daily_trade_flag:
-                self.logger.info(f'check trade time {self.instrument} {self.daily_trade_flag}'
-                                 f' {date.today()}')
-                if self.daily_trade_flag == date.today():
-                    self.logger.info('skip by daily trade')
-                    return
+            # if self.daily_trade_flag:
+            #     self.logger.info(f'check trade time {self.instrument} {self.daily_trade_flag}'
+            #                      f' {date.today()}')
+            #     if self.daily_trade_flag == date.today():
+            #         self.logger.info('skip by daily trade')
+            #         return
 
             if self.signal:
                 self.logger.info(f'insert order open {self.signal} {self.symbol1} {self.symbol2}')
