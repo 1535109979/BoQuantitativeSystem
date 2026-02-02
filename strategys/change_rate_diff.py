@@ -197,7 +197,8 @@ class ChangeRateDiffStrategy():
 
             if self.signal:
                 if self.daily_trade_flag:
-                    self.logger.info(f'check trade time {self.instrument} {self.daily_trade_flag} {date.today()}')
+                    self.logger.info(f'check trade time {self.instrument} {self.daily_trade_flag}'
+                                     f' {self.daily_trade_flag.date()} {date.today()}')
                     if self.daily_trade_flag.date() == date.today():
                         self.logger.info('skip by daily trade')
                         return
