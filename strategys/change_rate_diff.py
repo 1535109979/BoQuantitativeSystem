@@ -23,6 +23,8 @@ class ChangeRateDiffStrategy():
         self.loss_stop_profit_rate = params['loss_stop_profit_rate']
         self.max_profit_rate = params['max_profit_rate']
         self.daily_trade_flag = params['daily_trade_flag']
+        if self.daily_trade_flag:
+            self.daily_trade_flag = self.daily_trade_flag.date()
 
         param_json = eval(params['param_json'])
         self.position_flag = param_json.get('position_flag')
@@ -201,12 +203,12 @@ class ChangeRateDiffStrategy():
                                   f'max_profit_rate: {self.max_profit_rate} profit_rate: {self.profit_rate}')
                 return
 
-            # if self.daily_trade_flag:
-            #     self.logger.info(f'check trade time {self.instrument} {self.daily_trade_flag}'
-            #                      f' {date.today()}')
-            #     if self.daily_trade_flag == date.today():
-            #         self.logger.info('skip by daily trade')
-            #         return
+            if self.daily_trade_flag:
+                self.logger.info(f'check trade time {self.instrument} {self.daily_trade_flag}'
+                                 f' {date.today()}')
+                if self.daily_trade_flag == date.today():
+                    self.logger.info('skip by daily trade')
+                    return
 
             if self.signal:
                 self.logger.info(f'insert order open {self.signal} {self.symbol1} {self.symbol2}')
