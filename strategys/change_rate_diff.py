@@ -196,7 +196,7 @@ class ChangeRateDiffStrategy():
                 self.save_position({'position_flag': 0, 's1_open_price': 0, 's2_open_price': 0})
                 self.save_daily_trade_flag()
                 self.max_profit_rate = 0
-                self.save_max_profit_rate(0)
+                self.save_max_profit_rate(self.profit_rate)
         else:
             if self.max_profit_rate or self.profit_rate:
                 self.logger.error(f'data error position_flag:{self.position_flag} '
