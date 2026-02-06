@@ -165,7 +165,7 @@ class SsEngine:
         log_fp = Configs.root_fp + f'logs/{self.account_id}_bi_future_ss.log'
 
         from logging.handlers import TimedRotatingFileHandler
-        handler = TimedRotatingFileHandler(log_fp, when="midnight", interval=1, backupCount=7)
+        handler = TimedRotatingFileHandler(log_fp, when="midnight", interval=1, backupCount=2)
         handler.suffix = "%Y-%m-%d.log"  # 设置滚动后文件的后缀
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - PID:%(process)d - %(message)s')
         handler.setFormatter(formatter)

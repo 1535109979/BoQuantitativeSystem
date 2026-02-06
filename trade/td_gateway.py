@@ -144,7 +144,7 @@ class TDGateway:
             trading_day = rtn_trade.trading_day,
             trade_time = rtn_trade.trade_time,
             profit = rtn_trade.profit,
-            commission = round(rtn_trade.commission * bnb_price, 2),
+            commission = round(rtn_trade.commission * bnb_price, 8),
             commission_asset = rtn_trade.commission_asset,
             update_time = datetime.now(),
         )
