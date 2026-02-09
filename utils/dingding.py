@@ -1,4 +1,6 @@
 import json
+import threading
+import time
 from datetime import datetime
 
 import requests
@@ -13,10 +15,6 @@ class Dingding:
     @classmethod
     @instance_synchronized
     def send_msg(cls, text: str, isatall=False):
-        # print('-----', datetime.now())
-        # print(text)
-        # print('-----')
-        # return
         data = {
             "msgtype": "markdown",
             "markdown": {
