@@ -4,7 +4,7 @@ import time
 from dataclasses import asdict
 from datetime import date, datetime
 
-from BoQuantitativeSystem.database.use_data import UseInstrumentConfig
+from BoQuantitativeSystem.database.use_data import UseInstrumentConfig, InstrumentProfitRate
 from BoQuantitativeSystem.utils.aio_timer import AioTimer
 from BoQuantitativeSystem.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 from BoQuantitativeSystem.utils.sys_exception import common_exception
@@ -17,6 +17,7 @@ class ChangeRateDiffStrategy():
 
         self.params = params
         self.instrument = params['instrument']
+        self.account_id = params['account_id']
         self.symbol1, self.symbol2 = params['instrument'].split('_')
         self.open_rate = params['open_rate']
         self.win_stop_profit_rate = params['win_stop_profit_rate']
@@ -187,6 +188,7 @@ class ChangeRateDiffStrategy():
                         self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                              Direction.SHORT, OrderPriceType.LIMIT,str(price_s1), s1_position_short.volume)
 
+                self.save_profit_rate(self.profit_rate)
                 self.save_position({'position_flag': 0, 's1_open_price': 0, 's2_open_price': 0})
                 self.save_daily_trade_flag()
                 self.max_profit_rate = 0
@@ -234,6 +236,15 @@ class ChangeRateDiffStrategy():
         update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
         update_date.daily_trade_flag = self.daily_trade_flag
         update_date.save()
+
+    def save_profit_rate(self, profit_rate):
+        add_date = InstrumentProfitRate(
+            account_id=self.account_id,
+            instrument=self.instrument,
+            profit_rate=profit_rate,
+            update_time=datetime.now(),
+        )
+        add_date.save()
 
     def save_max_profit_rate(self, max_profit_rate):
         update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)

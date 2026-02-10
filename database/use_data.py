@@ -44,6 +44,16 @@ class TableUpdatedTime(Model):
         database = SqliteDatabaseManage().get_connect()
         table_name = 'table_updated_time'
 
+class InstrumentProfitRate(Model):
+    id = AutoField(primary_key=True)
+    account_id = CharField()
+    instrument = CharField()
+    profit_rate = FloatField()
+    update_time = DateTimeField()
+
+    class Meta:
+        database = SqliteDatabaseManage().get_connect()
+        table_name = 'instrument_profit_rate'
 
 def initialize_database():
     db = SqliteDatabaseManage().get_connect()
@@ -57,6 +67,7 @@ initialize_database()
 if __name__ == '__main__':
     # UseInstrumentConfig.create_table()
     # TableUpdatedTime.create_table()
+    # InstrumentProfitRate.create_table()
 
 
     # use_instrument_configs = UseInstrumentConfig.select()
