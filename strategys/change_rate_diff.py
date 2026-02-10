@@ -188,7 +188,7 @@ class ChangeRateDiffStrategy():
                         self.strategy_process.td_gateway.insert_order(self.symbol1, OffsetFlag.CLOSE,
                              Direction.SHORT, OrderPriceType.LIMIT,str(price_s1), s1_position_short.volume)
 
-                self.save_profit_rate(self.profit_rate)
+                self.save_instrument_profit_rate(self.profit_rate)
                 self.save_position({'position_flag': 0, 's1_open_price': 0, 's2_open_price': 0})
                 self.save_daily_trade_flag()
                 self.max_profit_rate = 0
@@ -237,7 +237,8 @@ class ChangeRateDiffStrategy():
         update_date.daily_trade_flag = self.daily_trade_flag
         update_date.save()
 
-    def save_profit_rate(self, profit_rate):
+    def save_instrument_profit_rate(self, profit_rate):
+        self.logger.info(f'save_profit_rate {self.account_id} {self.instrument} {profit_rate}')
         add_date = InstrumentProfitRate(
             account_id=self.account_id,
             instrument=self.instrument,

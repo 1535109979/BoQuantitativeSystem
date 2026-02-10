@@ -70,7 +70,8 @@ if __name__ == '__main__':
     # print(data)
 
 
-    data = dbm.query_data(table_name='use_instrument_config')
+    data = dbm.query_data(table_name='instrument_profit_rate')
+    print(data)
     print(len(data['data']))
     for row in data['data']:
         print(row)
