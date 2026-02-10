@@ -69,12 +69,12 @@ if __name__ == '__main__':
     # data = dbm.query_last_account_value(account_id='chao')
     # print(data)
 
-
     data = dbm.query_data(table_name='instrument_profit_rate')
     print(data)
-    print(len(data['data']))
-    for row in data['data']:
-        print(row)
+    # data = dbm.query_data(table_name='use_instrument_config')
+    # print(len(data['data']))
+    # for row in data['data']:
+    #     print(row)
 
     # data = {
     #     "account_id": "chao",

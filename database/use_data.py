@@ -74,10 +74,10 @@ if __name__ == '__main__':
     # for use_instrument_config in use_instrument_configs:
     #     print(use_instrument_config.__data__)
 
-    update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument=='DOGEUSDT_BNBUSDT')
-    # update_date.update_time = datetime.now()
-    update_date.param_json = {'position_flag': Direction.LONG.value}
-    update_date.save()
+    # update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument=='DOGEUSDT_BNBUSDT')
+    # # update_date.update_time = datetime.now()
+    # update_date.param_json = {'position_flag': Direction.LONG.value}
+    # update_date.save()
 
 
     # save_data = UseInstrumentConfig(
@@ -105,4 +105,10 @@ if __name__ == '__main__':
     # )
     # save_data.save()
 
-
+    add_date = InstrumentProfitRate(
+        account_id='feng',
+        instrument='TRXUSDT_ADAUSDT',
+        profit_rate=0,
+        update_time=datetime.now(),
+    )
+    add_date.save()

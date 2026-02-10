@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 from BoQuantitativeSystem.database.dbm import AccountValue, TradeInfo
-from BoQuantitativeSystem.database.use_data import UseInstrumentConfig, TableUpdatedTime
+from BoQuantitativeSystem.database.use_data import UseInstrumentConfig, TableUpdatedTime, InstrumentProfitRate
 
 app = Flask(__name__)
 
@@ -35,6 +35,7 @@ def query_table_data():
         'account_value': AccountValue,
         'trade_info': TradeInfo,
         'table_updated_time': TableUpdatedTime,
+        'instrument_profit_rate': InstrumentProfitRate,
         }
 
     table_name = request.args.get('table_name')
