@@ -233,7 +233,10 @@ class ChangeRateDiffStrategy():
     def save_daily_trade_flag(self):
         self.daily_trade_flag = date.today()
         self.logger.info(f'save daily_trade_flag={self.daily_trade_flag}')
-        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
+        update_date = UseInstrumentConfig.get(
+            (UseInstrumentConfig.instrument == self.instrument) &
+            (UseInstrumentConfig.account_id == self.account_id)
+        )
         update_date.daily_trade_flag = self.daily_trade_flag
         update_date.save()
 
@@ -248,13 +251,19 @@ class ChangeRateDiffStrategy():
         add_date.save()
 
     def save_max_profit_rate(self, max_profit_rate):
-        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
+        update_date = UseInstrumentConfig.get(
+            (UseInstrumentConfig.instrument == self.instrument) &
+            (UseInstrumentConfig.account_id == self.account_id)
+        )
         update_date.max_profit_rate = max_profit_rate
         update_date.stop_profit_rate = 0
         update_date.save()
 
     def save_profit_rate(self):
-        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
+        update_date = UseInstrumentConfig.get(
+            (UseInstrumentConfig.instrument == self.instrument) &
+            (UseInstrumentConfig.account_id == self.account_id)
+        )
         update_date.stop_profit_rate = round(self.profit_rate ,2)
         update_date.save()
 
@@ -263,7 +272,10 @@ class ChangeRateDiffStrategy():
         self.s1_open_price = param_json['s1_open_price']
         self.s2_open_price = param_json['s2_open_price']
 
-        update_date = UseInstrumentConfig.get(UseInstrumentConfig.instrument == self.instrument)
+        update_date = UseInstrumentConfig.get(
+            (UseInstrumentConfig.instrument == self.instrument) &
+            (UseInstrumentConfig.account_id == self.account_id)
+        )
         update_date.param_json = param_json
         update_date.save()
 

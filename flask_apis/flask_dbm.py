@@ -1,3 +1,4 @@
+import pandas as pd
 import requests
 import json
 
@@ -69,12 +70,18 @@ if __name__ == '__main__':
     # data = dbm.query_last_account_value(account_id='chao')
     # print(data)
 
-    data = dbm.query_data(table_name='instrument_profit_rate')
-    print(data)
-    # data = dbm.query_data(table_name='use_instrument_config')
-    # print(len(data['data']))
-    # for row in data['data']:
-    #     print(row)
+    # data = dbm.query_data(table_name='instrument_profit_rate')
+    data = dbm.query_data(table_name='use_instrument_config')
+    df = pd.DataFrame(data['data'])
+    # print(df)
+    for d in data['data']:
+        print(d)
+    # print(df['profit_rate'].sum())
+    #
+    # def process_instrument(df_instrument):
+    #     print(df_instrument)
+    #
+    # df.groupby('instrument').apply(process_instrument)
 
     # data = {
     #     "account_id": "chao",
