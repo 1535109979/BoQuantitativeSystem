@@ -39,7 +39,7 @@ class MsGateway(object):
 
     def get_api_configs(self):
         if Configs.account_type == 'CRYPTO':
-            return {'stream_url': 'wss://fstream.binance.com'}
+            return {'stream_url': 'wss://fstream.binance.com/market'}
 
         elif Configs.account_type == 'FUTURE':
             return Configs.ctp_setting

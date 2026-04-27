@@ -82,11 +82,11 @@ if __name__ == '__main__':
 
     save_data = UseInstrumentConfig(
         account_id='feng',
-        cash=100,
-        instrument='BNBUSDT_TRXUSDT',
-        open_rate=2,
-        win_stop_profit_rate=1,
-        loss_stop_profit_rate=3,
+        cash=1000,
+        instrument='BNBUSDT_XRPUSDT',
+        open_rate=1,
+        win_stop_profit_rate=2,
+        loss_stop_profit_rate=2,
         daily_trade_flag=0,
         max_profit_rate=0,
         param_json={},
