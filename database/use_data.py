@@ -81,8 +81,8 @@ if __name__ == '__main__':
 
 
     save_data = UseInstrumentConfig(
-        account_id='feng',
-        cash=1000,
+        account_id='bo',
+        cash=10,
         instrument='BNBUSDT_XRPUSDT',
         open_rate=1,
         win_stop_profit_rate=2,

@@ -382,6 +382,7 @@ class BiFutureTd:
 
     @common_exception(log_flag=True)
     def _on_user_data_ORDER_TRADE_UPDATE(self, data: dict):
+        self.logger.info('<_on_user_data_ORDER_TRADE_UPDATE> data:', data)
         o = data.get("o")
         if o:
             order_id = o["c"]

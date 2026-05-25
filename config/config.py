@@ -41,86 +41,6 @@ class Configs:
         if not os.path.exists(fp):
             os.mkdir(fp)
 
-    # stop_loss breakout bid
-    strategy_list = [
-
-        {'instrument': 'BOMEUSDT', 'cash': 10,
-         'windows': 100, 'roll_mean_period': 800, 'interval_period': 100,
-         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
-         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
-         'cover_count': 0, 'last_couer_price': 0,
-         'peak': 0, 'tough': 0,
-         'cover_muti_list': [2, 4, 8, 16, 32, 64],
-         'cover_decline_list': [5, 6, 7, 8, 9, 10],
-         'stop_profit_rate': 1.3,
-         },
-
-        {'instrument': '1000RATSUSDT', 'cash': 10,
-         'windows': 500, 'roll_mean_period': 500, 'interval_period': 400,
-         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
-         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
-         'cover_count': 0, 'last_couer_price': 0,
-         'peak': 0, 'tough': 0,
-         'cover_muti_list': [2, 4, 8, 16, 32, 64],
-         'cover_decline_list': [7, 8, 9, 10, 11, 12],
-         'stop_profit_rate': 1.3,
-         },
-
-        {'instrument': 'ALICEUSDT', 'cash': 10,
-         'windows': 100, 'roll_mean_period': 200, 'interval_period': 400,
-         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
-         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
-         'cover_count': 0, 'last_couer_price': 0,
-         'peak': 0, 'tough': 0,
-         'cover_muti_list': [2, 4, 8, 16, 32, 64],
-         'cover_decline_list': [7, 8, 9, 10, 11, 12],
-         'stop_profit_rate': 1.3,
-         },
-
-        {'instrument': '1000FLOKIUSDT', 'cash': 10,
-         'windows': 100, 'roll_mean_period': 400, 'interval_period': 200,
-         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
-         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
-         'cover_count': 0, 'last_couer_price': 0,
-         'peak': 0, 'tough': 0,
-         'cover_muti_list': [2, 4, 8, 16, 32, 64],
-         'cover_decline_list': [7, 8, 9, 10, 11, 12],
-         'stop_profit_rate': 1.3,
-         },
-
-        {'instrument': 'BAKEUSDT', 'cash': 10,
-         'windows': 100, 'roll_mean_period': 200, 'interval_period': 200,
-         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
-         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
-         'cover_count': 0, 'last_couer_price': 0,
-         'peak': 0, 'tough': 0,
-         'cover_muti_list': [2, 4, 8, 16, 32, 64],
-         'cover_decline_list': [7, 8, 9, 10, 11, 12],
-         'stop_profit_rate': 1.3,
-         },
-
-        {'instrument': 'GTCUSDT', 'cash': 10,
-         'windows': 100, 'interval_period': 700, 'roll_mean_period': 200,
-         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
-         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
-         'cover_count': 0, 'last_couer_price': 0,
-         'peak': 0, 'tough': 0,
-         'cover_muti_list': [2, 4, 8, 16, 32, 64],
-         'cover_decline_list': [7, 8, 9, 10, 11, 12],
-         'stop_profit_rate': 1.3,
-         },
-
-        {'instrument': 'MYROUSDT', 'cash': 10,
-         'windows': 200, 'interval_period': 100, 'roll_mean_period': 300,
-         'strategy_name': ['stop_loss', 'breakout'], 'open_direction': 'LONG',
-         'open_volume': 30, 'order_step_muti': 10, 'stop_loss_rate': 0.1,
-         'cover_count': 0, 'last_couer_price': 0,
-         'peak': 0, 'tough': 0,
-         'cover_muti_list': [2, 4, 8, 16, 32, 64],
-         'cover_decline_list': [7, 8, 9, 10, 11, 12],
-         'stop_profit_rate': 1.3,
-         },
-    ]
 
     ctp_setting = {
         "vn_config_home": os.path.join(os.path.expanduser('~'), ".vntrader"),
@@ -133,14 +53,8 @@ class Configs:
 
     crypto_setting = {
         'recvWindow': '5000',
-        'stream_url': 'wss://fstream.binance.com',
+        'stream_url': 'wss://fstream.binance.com/private',
         'base_url': 'https://fapi.binance.com',
-        # 'api_key': '8kHJ8xMwb8wZkrTy17IVOym4CDo5qS6JFP8suvpsDaWCqjuBuIAn29HFYKuQM1bE',       # bo
-        # 'secret_key': 'uUH1X2sz5jnMVhL44zxHiphnxhoQ5swPs62gFg4JFLCRayWwFr2MZJm9dJlaM2WK',
-        # 'api_key': 'tw8xvSqYAXfqqTHWBKKuvETUcJ6w9BttMG6QIb7q7CceVrl74RdeChxeg05zfDg2',     # hui
-        # 'secret_key': '81b9bXaVU7t0QhRQrFB5NfulRYYO7IFiR2D3rLOdrSlbGA2NYwxBvIy09JQPC1dL',
-        # 'api_key': 'b9b98tFEOvo4hdRKkblM33l5hf8WAg99l4SS3aOGNsDKH8yOJ8cXu08JBIfE9BmJ',  # chao
-        # 'secret_key': '1PYXKw57m7DtjFj4moeRtYlCSHwazR7NSyv75ysPeIxBcTfYcuFUdjc5f3B8Z8rR',
     }
 
     @classmethod

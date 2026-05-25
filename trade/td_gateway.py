@@ -15,9 +15,11 @@ from BoQuantitativeSystem.utils.sys_exception import common_exception
 
 class TDGateway:
     def __init__(self, engine, account_id):
-        self.engine = engine
+        if engine:
+            self.engine = engine
+            self.logger = engine.logger
+
         self.account_id = account_id
-        self.logger = engine.logger
         self.client = None
         self.account_book = None
         self._save_account_data_timer(interval=180)
@@ -179,3 +181,11 @@ class TDGateway:
     def send_msg(self, msg):
         Dingding.send_msg(msg)
         # pass
+
+
+if __name__ == '__main__':
+    td_gateway = TDGateway(None, 'bo')
+
+
+
+    # td_gateway.insert_order('BNBUSDT', OffsetFlag.CLOSE,Direction.LONG, OrderPriceType.LIMIT, str(660), 0.01, cash=10)

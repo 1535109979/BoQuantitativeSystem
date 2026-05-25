@@ -42,8 +42,8 @@ class SsEngine:
         self.ms_stub = None
         self.logger = None
         self.create_logger()
-
         self.quote_data = []
+
         self.r = redis.Redis(**Configs.redis_setting)
         self.redis_client = self.r.pubsub()
         self.sub_redis_thread = threading.Thread(target=self.subscribe_redis)
@@ -112,8 +112,7 @@ class SsEngine:
                         s1, s2 = instrument_config["instrument"].split('_')
                         self.ms_stub.subscribe_stream_in_new_thread(instruments=[s1, s2], on_quote=self.on_quote)
                         p = PortfolioProcess(self, instrument_config)
-                        # self.portfolio_maps[s1] = p
-                        # self.portfolio_maps[s2] = p
+
                         self.portfolio_maps[instrument] = [p]
                         if self.portfolio_maps.get(s1):
                             self.portfolio_maps[s1].append(p)
