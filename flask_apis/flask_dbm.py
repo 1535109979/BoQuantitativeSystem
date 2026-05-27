@@ -64,9 +64,9 @@ if __name__ == '__main__':
     # print(data)
 
     # data = dbm.query_data(table_name='trade_info')
-    data = dbm.query_data(table_name='account_value')
-    print(data)
-    quit()
+    # data = dbm.query_data(table_name='account_value')
+    # print(data)
+    # quit()
     # data = dbm.query_last_account_value(account_id='chao')
     # print(data)
 
