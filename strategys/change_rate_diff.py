@@ -6,6 +6,7 @@ from datetime import date, datetime
 
 from BoQuantitativeSystem.database.use_data import UseInstrumentConfig, InstrumentProfitRate
 from BoQuantitativeSystem.utils.aio_timer import AioTimer
+from BoQuantitativeSystem.utils.dingding import Dingding
 from BoQuantitativeSystem.utils.exchange_enum import Direction, OffsetFlag, OrderPriceType
 from BoQuantitativeSystem.utils.sys_exception import common_exception
 
@@ -295,6 +296,7 @@ class ChangeRateDiffStrategy():
         self.df_s2_today = df_s2.loc[df_s2['start_time'].dt.date == today]
 
         if self.df_s1_today.empty or self.df_s2_today.empty:
+            Dingding.send_msg('update open price error not daily data')
             return
         self.base_price[self.symbol1] = float(self.df_s1_today['open'].iloc[0])
         self.base_price[self.symbol2] = float(self.df_s2_today['open'].iloc[0])
